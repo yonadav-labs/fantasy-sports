@@ -33,7 +33,9 @@ $(function() {
 
     $('#div-result').html('<div class="font-weight-bold ml-5 pl-4" style="margin-top: 48vh;">Calculating ...</div>');
     $.post( "/gen-lineups", $('#frm-player').serialize(), function( data ) {
-      $( "#div-result" ).html( data );
+      $("#div-result").html(data.player_stat);
+      $('#dlg-preview .modal-body').html(data.preview_lineups);
+      $('#dlg-preview').modal();
     });
   });
 

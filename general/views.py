@@ -512,12 +512,18 @@ def gen_lineups(request):
 
     players_ = [{ 'name': '{} {}'.format(ii.first_name, ii.last_name), 
                   'team': ii.team, 
+                  'position': ii.position,
                   'id': ii.id, 
                   'avatar': ii.avatar, 
                   'lineups': get_num_lineups(ii, lineups)} 
                 for ii in players if get_num_lineups(ii, lineups)]
     players_ = sorted(players_, key=lambda k: k['lineups'], reverse=True)
-    return HttpResponse(render_to_string('player-lineup.html', locals()))
+    result = {
+        'player_stat': render_to_string('player-lineup.html', locals()),
+        'preview_lineups': render_to_string('player-lineup.html', locals())
+    }
+
+    return JsonResponse(result, safe=False)
 
 
 def export_lineups(request):
