@@ -6,7 +6,7 @@ from os import sys, path
 import django
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "fantasy_nba.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "fantasy_sports.settings")
 django.setup()
 
 from general.models import *
@@ -28,7 +28,9 @@ def get_players(data_source):
         print data_source, len(players)
         for ii in players:
             defaults = { key: str(ii[key]).replace(',', '') for key in fields }
-            defaults['proj_points'] = float(defaults['proj_points']) + random.randrange(-20, 20) / 10.0
+            defaults['proj_points'] = float(ii['proj_points']) + random.randrange(-20, 20) / 10.0
+            if defaults['proj_points'] <= 0:
+                defaults['proj_points'] = float(ii['proj_points'])
             defaults['play_today'] = True
 
             defaults['injury'] = html2text.html2text(ii['injury']).strip()

@@ -10,7 +10,7 @@ import pdb
 from datetime import datetime
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "fantasy_nba.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "fantasy_sports.settings")
 django.setup()
 
 from general.models import *
@@ -38,19 +38,20 @@ def nameSync(name):
 
 def main():
     dp = "https://www.basketball-reference.com/friv/dailyleaders.fcgi"
+    dp = 'https://www.basketball-reference.com/friv/dailyleaders.fcgi?month=11&day=4&year=2018&type=all'
     response = urllib2.urlopen(dp)
     r = response.read()
 
-    is_new = True
+    is_new = False # True
     soup = BeautifulSoup(r, "html.parser")
     # pdb.set_trace()
 
     try:
         date = soup.find("span", {"class": "button2 current"}).text
         date = datetime.strptime(date, '%b %d, %Y')
-        last_game = PlayerGame.objects.all().order_by('-date').first()
-        if last_game and last_game.date == date.date():
-            is_new = False
+        # last_game = PlayerGame.objects.all().order_by('-date').first()
+        # if last_game and last_game.date == date.date():
+        #     is_new = False
 
         table = soup.find("table", {"id":"stats"})
         player_rows = table.find("tbody")

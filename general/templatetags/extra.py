@@ -24,4 +24,4 @@ def ou_ml(game, team):
 
 @register.filter
 def salery_per_projection(player):
-	return '{:.1f}'.format(player.salary / player.proj_points)
+	return '{:.1f}'.format(player.salary / player.proj_points) if player.proj_points else '-'
