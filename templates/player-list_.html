@@ -6,7 +6,7 @@
       <th colspan="2">Player</th>
       <th class="text-right pr-3">Salary</th>
       <th class="">Projections</th>
-      <th class="" colspan="2">SalPP</th>
+      <th class="" colspan="2">PT/Sal</th>
     </tr>
   </thead>
   <tbody>
@@ -29,7 +29,7 @@
         <td class="pl-3">
           <input type="number" min="0" class="form-control text-right pl-1 pr-0" step="0.1" data-id="{{ ii.id }}" value="{{ ii.proj_points }}" style="width: 60px;" onchange="change_point(this);" readonly="">
         </td>
-        <td>{% if ds != 'Yahoo' %}${% endif %} {{ ii|salery_per_projection }}</td>
+        <td>{{ ii|salery_per_projection:ds }}</td>
         <td>
           <i class="fas fa-lock-open fa-md lock unlocked" onclick="toggleLock(this, {{ ii.id }});"></i>
         </td>

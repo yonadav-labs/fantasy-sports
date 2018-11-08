@@ -23,5 +23,6 @@ def ou_ml(game, team):
         return '( {} )'.format(int(game.ou))
 
 @register.filter
-def salery_per_projection(player):
-	return '{:.1f}'.format(player.salary / player.proj_points) if player.proj_points else '-'
+def salery_per_projection(player, ds):
+	factor = 1 if ds == 'Yahoo' else 1000
+	return '{:.1f}'.format(player.proj_points * factor / player.salary) if player.salary else '-'
