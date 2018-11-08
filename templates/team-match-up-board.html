@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load extra %}
+
+{% block css %}
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/static/css/slider.css">
+{% endblock %}
+
+{% block content %}
+<div class="offset-md-1 col-md-10 mt-4">
+  <div class="row">
+    <div class="col-md-8 pl-0">
+      <h5 class="mb-3">Team Match-Up Board</h5>
+
+      <h6 class="text-success">- Game Slates</h6>
+      <div class="slate pl-3 pt-1 mb-2">
+        {% for game in games %}
+          <div class="game-item text-center float-left mr-3" data-game="{{ game.id }}">
+            <div class="">{{ game.visit_team }} {{ game|ou_ml:game.visit_team }}</div>
+            <div class="time">@ ( {{ game.date|date:"H:i" }} )</div>
+            <div class="">{{ game.home_team }} {{ game|ou_ml:game.home_team }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="float-right" style="margin-top: 33px;">
+        <label class="mr-2">AFP: </label>
+        <input type="text" class="slider-val" readonly>
+        <div class="fpts-filter slider-range afp"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row team-board mt-4"></div>
+</div>
+{% endblock %}
+
+{% block script %}
+  <script type="text/javascript" src="/static/js/team_matchup.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{% endblock %}

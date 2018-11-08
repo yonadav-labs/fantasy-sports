@@ -1,0 +1,174 @@
+{% load extra %}
+<table class="table table-responsive-md" onmouseup="getStats()">
+  <tr>
+    <td>
+      <table>
+        <tr><th>H/A</th></tr>
+        {% for ii in games %}
+        <tr><td>{% if ii.location %} {{ ii.location }} {% else %} &nbsp; {% endif %}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th>Opp</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.opp }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">Minutes</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.mp|floatformat:1 }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">FG</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.fg }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">FGA</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.fga }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">FG%</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.fg_pct|percent }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">3P</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.fg3 }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">3PA</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.fg3a }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">3P%</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.fg3_pct|percent }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">FT</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.ft }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">FTA</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.fta }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+
+    <td>
+      <table>
+        <tr><th class="num">FT%</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.ft_pct|percent }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">REB</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.trb }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">AST</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.ast }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">ST</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.stl }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">BLK</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.blk }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">TO</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.tov }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">PF</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.pf }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">PTS</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.pts }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th class="num">FPTS</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.fpts }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+      <table>
+        <tr><th>Date</th></tr>
+        {% for ii in games %}
+        <tr><td>{{ ii.date|date:'m/d/Y' }}</td></tr>
+        {% endfor %}
+      </table>
+    </td>
+  </tr>
+</table>

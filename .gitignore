@@ -1,0 +1,12 @@
+*.pyc
+*.db
+*.sqlite3
+env/
+nohup.out
+migrations
+static/media
+settings.py
+static/icons
+data/.~lock.*
+*.csv
+*.csv#

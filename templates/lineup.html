@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load extra %}
+
+{% block content %}
+<div class="container pt-3 mt-3 mb-3 lineups-container">
+  <form id="frm-player" action="/export_lineups" method="POST">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-12 mb-4">
+        <h5 class="mb-4">Lineup Optimizer</h5>
+
+        <h6 class="text-success">- Game Slates</h6>
+        <div class="slate pl-3 pt-1 mb-2">
+          {% for game in games %}
+            <div class="slate-item">
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input type="checkbox" class="form-check-input" checked="" value="{{ game.home_team }}-{{ game.visit_team }}">{{ game.visit_team }} @ {{ game.home_team }}
+                </label>
+              </div>
+              <div class="ml-4 text-secondary">( {{ game.date|date:"H:i" }} )</div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <input type="hidden" name="ds" id="ds">
+      <div class="col-md-7 mb-4">
+        <ul class="nav nav-tabs ds">
+          {% for ds in data_sources %}  
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#home">{{ ds.0 }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+        <div class="tab-content players-pane p-2">
+          <ul class="nav nav-pills position-filter p-2">
+            <li class="nav-item">
+              <a class="nav-link active" href="#">All</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">PG</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">SG</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">SF</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">PF</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">C</a>
+            </li>
+          </ul>
+          <input class="form-control m-2 mb-3" id="search-player" type="search" placeholder="Search Player Name" autocomplete="off">
+          <div id="div-players"></div>
+        </div>
+      </div>
+
+      <div class="col-md-5 pl-4" id="div-result"></div>
+      <div class="pl-4 col-md-10 mb-5">
+        <button class="btn btn-sm btn-success btn-export">Export</button>
+        <a class="btn btn-sm btn-success btn-calc">Calculate</a>
+        <a class="btn btn-sm btn-success btn-clear">Clear</a>
+        <input type="number" class="mr-3 num-lineups float-right" name="num-lineups" value="5" min="1">
+        <span class="float-right pt-1 mr-2">Number of Lineups:</span>
+      </div>
+    </div>
+  </form>
+  <div class="modal fade" id="dlg-export">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Exporting Lineups</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          The csv file will be downloaded shortly.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>  
+{% endblock %}
+
+{% block script %}
+  <script src="/static/js/lineup.js"></script>
+{% endblock %}

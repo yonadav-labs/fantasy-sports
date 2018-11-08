@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load extra %}
+
+{% block content %}
+<div class="container mt-4">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-12 mb-4">
+        <h5 class="mb-4">Player List</h5>
+        <div class="p-2" style="border: 1px solid #eee;">
+          <div class="col-md-6 p-0">
+            <ul class="nav nav-pills position-filter p-2">
+              <li class="nav-item">
+                <a class="nav-link active" href="#">All</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">PG</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">SG</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">SF</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">PF</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">C</a>
+              </li>
+            </ul>
+          </div>
+          <input class="form-control m-2 mb-3" id="search-player" type="search" placeholder="Search Player Name" autocomplete="off">
+          <div class="col-md-12 games player-board player-list">
+            <table class="table table-hover table-responsive-md">
+            <thead>
+              <tr>
+                <th>Player</th><th>&nbsp;</th><th>&nbsp;</th>
+                <th>POS</th>
+                <th>Team</th>
+                <th>Salary</th><th>&nbsp;</th>
+                <th>MIN</th>
+                <th title="Ceiling">Ceiling</th>
+                <th title="Floor">Floor</th>
+                <th title="Original">OGL</th>
+                <th title="Points">PTS</th>
+                <th>SITE</th>
+                <th title="Floor">VAL</th>
+                <th>INJ</th>
+                <th></th>
+              </tr>
+            </thead>
+              <tbody>
+                {% for ii in players %}
+                  <tr>
+                    <td colspan="3"><a href="/players/{{ ii.id }}"><img src="{{ ii.avatar }}" height="24" class="mr-2">{{ ii.first_name }} {{ ii.last_name }}</a></td>
+                    <td>{{ ii.position }}</td>
+                    <td>{{ ii.team }}</td>
+                    <td colspan="2">$ {{ ii.salary|floatformat:2 }}</td>
+                    <td>{{ ii.minutes|floatformat:1 }}</td>
+                    <td>{{ ii.proj_ceiling|floatformat:1 }}</td>
+                    <td>{{ ii.proj_floor|floatformat:1 }}</td>
+                    <td>{{ ii.proj_original|floatformat:1 }}</td>
+                    <td>{{ ii.proj_points|floatformat:1 }}</td>
+                    <td>{{ ii.proj_site|floatformat:1 }}</td>
+                    <td>{{ ii.value|floatformat:1 }}</td>
+                    <td class="text-danger">{{ ii.injury }}</td>
+                    <td><i class="far fa-thumbs-up fav {{ ii.uid|liked }}" data-uid="{{ ii.uid }}"></i></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>  
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/players.js"></script>
+{% endblock %}

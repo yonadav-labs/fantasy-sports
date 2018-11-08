@@ -1,0 +1,383 @@
+body {
+    background: gray;
+}
+
+.lineups-container {
+    background: #f9f9f9;
+    border-radius: 5px;
+}
+
+th {
+    border-top: none !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.fav-frame {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #cbcbcb;
+    z-index: 5;
+    margin-top: -5px;
+}
+
+.fav-wrapper {
+    position: fixed;
+    bottom: 0;
+    right: 5px;
+    width: calc(100% - 10px);
+    max-width: 310px;
+    z-index: 3;
+}
+
+.fav-wrapper .fav-body {
+    display: none;
+}
+
+.fav-wrapper.show-fav .fav-body {
+    display: block;
+    background: white;
+}
+
+.fav-body {
+    height: 400px;
+    border: solid 1px #4080ff;
+    font-size: 14px;
+}
+
+.fav-header {
+    height: 42px;
+    width: 100%;
+    background: #4080ff;
+    border-radius: 7px 7px 0 0;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.fav-title {
+    font-weight: 600;
+    padding: 12px 16px;
+    float: left;
+}
+
+.fav-close {
+    float: right;
+    padding-top: 15px;
+    padding-right: 12px;
+    cursor: pointer;
+}
+
+.fav {
+    cursor: pointer;
+    color: #aaa;
+}
+
+.fav.done {
+    color: gold;
+}
+
+#frm-player {
+    width: 100%;
+}
+
+.players-pane {
+    border:  1px solid #eee;
+    border-top: none;
+    background: white;
+}
+
+.sub {
+    font-size: 12px;
+    color: #555;
+}
+
+#div-players {
+    overflow-y: scroll; 
+    height: calc(98vh - 300px);
+}
+
+#div-players td, 
+#div-players th, 
+#div-result td, 
+#div-result th, 
+#div-players td input {
+    font-size: 13px !important;
+}
+
+table td {
+    padding: .24rem .6rem !important;
+}
+
+table th {
+    padding: .7rem .6rem !important;
+}
+
+.games {
+    max-height: calc(100vh - 370px); 
+    overflow-x: hidden;
+}
+
+.games table td {
+    padding: .4rem 7px !important;
+    font-size: 14px;
+}
+
+.games table th {
+    padding: .7rem 2px !important;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.player-list {
+    max-height: calc(100vh - 285px) !important; 
+}
+
+.player-list tbody {
+    max-height: calc(100vh - 345px); 
+}
+
+.player-board {
+    max-height: calc(100vh - 330px); 
+    overflow-x: hidden;
+}
+
+.player-board table th {
+    border-bottom: none !important;
+}
+
+.player-board tbody {
+    max-height: calc(100vh - 390px); 
+    overflow-x: hidden;
+    display: block;
+}
+
+.player-board thead, .player-board tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.player-board thead {
+    width: calc(100% - 10px);
+}
+
+.fav-inner thead, .fav-inner tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.fav-inner th {
+    padding: .4rem .6rem !important;
+}
+
+.fav-inner thead {
+    width: calc(100% - 14px);
+}
+
+.fav-inner tbody {
+    max-height: 345px; 
+    overflow-x: hidden;
+    display: block;
+}
+
+.fas.lock {
+    padding-top: 10px;
+    cursor: pointer;
+}
+
+.fa-lock-open {
+    color: #ccc;
+}
+
+.btn-calc {
+    width: 100px; 
+    color: white !important;
+}
+
+.btn-export {
+    width: 100px;
+}
+
+.btn-clear {
+    width: 100px; 
+    color: white !important;
+}
+
+.num-lineups {
+    width: 60px !important;
+    text-align: right;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.2;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+div.lineups {
+    overflow-y: scroll; 
+    height: calc(98vh - 293px)
+}
+
+#search-player {
+    width: calc(100% - 1.5rem);
+    font-size: 14px;
+}
+
+.position-filter .nav-item {
+    width: 16.6666666666666%;
+    text-align: center;
+}
+
+.position-filter .nav-item a {
+    border-radius: 15px;
+    height: 32px;
+    font-size: 15px;
+    font-weight: 600;
+    padding-top: 5px;
+}
+
+.filters label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #555;
+}
+
+.filters select {
+    padding: 3px 7px;
+}
+
+.filters .season {
+    padding-top: 5px;
+    font-size: 14px;
+    color: #777;
+}
+
+.filters .season.active {
+    color: #007bff;
+}
+
+.board-loading {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+td.break {
+    font-size: 9px !important;
+}
+
+.slate {
+    font-size: 13px;
+}
+
+.slate a {
+    font-weight: 700;
+    font-size: 14px;
+    padding: 5px 14px;
+}
+
+.slate .form-check-label {
+    cursor: pointer;
+}
+
+.slate-item {
+    float: left;
+    margin-right: 18px;
+    margin-bottom: 10px;
+    width: 100px;
+}
+
+.ds a {
+    /*font-weight: 700;*/
+    font-size: 15px;
+    /*padding: 5px 14px;*/
+}
+
+.slate-pane {
+    position: absolute;
+    top: 170px;
+    left: 30px;
+}
+
+.game-item {
+    background: #eee;
+    border-radius: 10px;
+    padding: 11px 17px;
+    cursor: pointer;
+    width: 115px;
+    margin-bottom: 8px;
+}
+
+.game-item.active {
+    color: white;
+    font-weight: 700;
+    background: #007bff;
+}
+
+.game-item.active .time {
+    color: white;
+}
+
+.game-item .time {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.team-board {
+    font-size: 13px;
+}
+
+.team-board th, .team-board td {
+    padding: 3px 4px !important;
+}
+
+.team td {
+    padding: 2px 4px !important;
+}
+
+.team-stat {
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.team-stat th {
+    padding: 4px 5px !important;
+    font-size: 11px;
+    color: #555;
+    cursor: pointer;
+}
+
+.team-stat .active {
+    background: #01FF70;
+}
+
+.team-stat .title {
+    font-weight: 700;
+}
+
+.team-stat.p-0 table {
+    width: 100%;
+}
+
+.team-stat tr {
+    table-layout: fixed;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: searchfield-cancel-button;
+}
+
+.e34tuh43 {
+    border: 1px solid #eee; 
+    border-radius: 4px; 
+    background: white;
+}
+
+.p954598g54 {
+    margin-top: 36px;
+    margin-bottom: 15px;
+}

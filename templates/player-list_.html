@@ -1,0 +1,39 @@
+{% load extra %}
+<table class="table table-hover table-responsive-md">
+  <thead>
+    <tr>
+      <th><input type="checkbox" id="chk-all" checked="" onclick="choose_all(this)"></th>
+      <th colspan="2">Player</th>
+      <th class="text-right pr-3">Salary</th>
+      <th class="">Projections</th>
+      <th class="" colspan="2">SalPP</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ii in players %}
+      <tr>
+        <td><input type="checkbox" name="ids" {% if not ii.injury %} checked="" {% endif %} value="{{ ii.id }}"></td>
+        <td style="cursor: pointer;" onclick="pr_click(this)">
+          <img src="{{ ii.avatar }}" height="30" class="mr-2"> {{ ii.position }}
+        </td>
+        <td>
+          <a href="#/players/{{ ii.id }}">
+            <div>
+              <span>{{ ii.first_name }} {{ ii.last_name }}<span>
+              <span class="text-danger font-weight-bold ml-3">{{ ii.injury }}</span>
+            </div>
+            <div class="sub">{{ ii.team }} {{ ii.opponent1 }}</div>
+          </a>
+        </td>
+        <td class="text-right pr-3">{% if ds != 'Yahoo' %}${% endif %} {{ ii.salary|floatformat:0 }}</td>
+        <td class="pl-3">
+          <input type="number" min="0" class="form-control text-right pl-1 pr-0" step="0.1" data-id="{{ ii.id }}" value="{{ ii.proj_points }}" style="width: 60px;" onchange="change_point(this);" readonly="">
+        </td>
+        <td>{% if ds != 'Yahoo' %}${% endif %} {{ ii|salery_per_projection }}</td>
+        <td>
+          <i class="fas fa-lock-open fa-md lock unlocked" onclick="toggleLock(this, {{ ii.id }});"></i>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

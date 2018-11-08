@@ -1,0 +1,59 @@
+{% load extra %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Fantasy NBA</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/static/css/fontawesome-5.2.0/all.min.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+  <link rel="stylesheet" href="/static/css/extra.css">
+
+  {% block css %}
+  {% endblock %}
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <a class="navbar-brand mr-5" href="/">Fantasy NBA ( {% now "m-d-Y" %} )</a>
+<!--   <ul class="navbar-nav">
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+        Products
+      </a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="/lineup">Lineup Optimizer</a>
+        <a class="dropdown-item" href="/player-match-up-board">Player Match-up Board</a>
+        <a class="dropdown-item" href="/team-match-up-board">Team Match-up Board</a>
+      </div>
+    </li>
+  </ul>
+ --></nav>
+
+<div class="container-fluid">
+  {% block content %}
+  {% endblock %}
+  <div class="fav-wrapper show-fav d-none">
+    <div class="fav-header">
+      <div class="fav-title"><i class="fa fa-thumbs-up"></i> Favorites</div>
+      <div class="fav-close"><i class="fa fa-window-maximize d-none"></i><i class="fa fa-window-minimize"></i></div>
+      <div class="fav-close fav-remove"><i class="fa fa-trash-alt"></i></div>
+    </div>
+    <div class="fav-body">
+    </div>
+  </div> 
+</div>
+
+{% block script %}
+{% endblock %}
+
+<script type="text/javascript" src="/static/js/common.js"></script>
+</body>
+</html>
+
+
