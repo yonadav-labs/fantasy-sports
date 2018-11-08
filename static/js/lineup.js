@@ -14,13 +14,17 @@ $(function() {
 
   $('.nav-tabs.ds .nav-link:first').click();
 
-  $('.btn-export').click(function() {
+  $('.btn-export').click(function(e) {
+    if (e) {
+      e.preventDefault();
+    }
     var num_players = $('input[type="checkbox"]:checked').length;
     if (num_players == 0) {
       alert('Please choose players.');
       return false;
     }
 
+    $('#frm-player').submit();
     $('#dlg-export').modal();
   });
 

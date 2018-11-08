@@ -506,6 +506,14 @@ def get_num_lineups(player, lineups):
     return num
 
 
+CSV_FIELDS = {
+    'FanDuel': ['PG', 'PG', 'SG', 'SG', 'SF', 'SF', 'PF', 'PF', 'C'],
+    'DraftKings': ['PG', 'SG', 'SF', 'PF', 'C', 'G', 'F', 'UTIL'],
+    'Yahoo': ['PG', 'SG', 'G', 'SF', 'PF', 'F', 'C', 'UTIL'],
+    'Fanball': ['PG', 'SG', 'SF', 'PF', 'C', 'G', 'F/C', 'UTIL']
+}
+
+
 def gen_lineups(request):
     lineups, players = _get_lineups(request)
     avg_points = mean([ii.projected() for ii in lineups])
@@ -518,9 +526,16 @@ def gen_lineups(request):
                   'lineups': get_num_lineups(ii, lineups)} 
                 for ii in players if get_num_lineups(ii, lineups)]
     players_ = sorted(players_, key=lambda k: k['lineups'], reverse=True)
+
+    ds = request.POST.get('ds')
+    header = CSV_FIELDS[ds] + ['Spent', 'Projected']
+    
+    rows = [ii.get_csv(ds).strip().split(',')+[ii.spent(), ii.projected()]
+            for ii in lineups]
+
     result = {
         'player_stat': render_to_string('player-lineup.html', locals()),
-        'preview_lineups': render_to_string('player-lineup.html', locals())
+        'preview_lineups': render_to_string('preview-lineups.html', locals())
     }
 
     return JsonResponse(result, safe=False)
@@ -529,13 +544,6 @@ def gen_lineups(request):
 def export_lineups(request):
     lineups, _ = _get_lineups(request)
     ds = request.POST.get('ds')
-    CSV_FIELDS = {
-        'FanDuel': ['PG', 'PG', 'SG', 'SG', 'SF', 'SF', 'PF', 'PF', 'C'],
-        'DraftKings': ['PG', 'SG', 'SF', 'PF', 'C', 'G', 'F', 'UTIL'],
-        'Yahoo': ['PG', 'SG', 'G', 'SF', 'PF', 'F', 'C', 'UTIL'],
-        'Fanball': ['PG', 'SG', 'SF', 'PF', 'C', 'G', 'F/C', 'UTIL']
-    }
-
     csv_fields = CSV_FIELDS[ds]
     path = "/tmp/.fantasy_nba_{}.csv".format(ds.lower())
 

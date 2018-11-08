@@ -7,6 +7,11 @@ body {
     border-radius: 5px;
 }
 
+#dlg-preview .modal-lg {
+    max-width: 1020px;
+    font-size: 13px;
+}
+
 th {
     border-top: none !important;
     border-bottom: 1px solid #dee2e6 !important;
