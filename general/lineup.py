@@ -63,7 +63,7 @@ class Roster:
             players = list(self.players)
             for ii in pos:
                 for jj in players:
-                    if jj.position in ii:
+                    if set(jj.actual_position.split('/')).intersection(set(ii.split(','))):
                         s += str(jj) + ','
                         players.remove(jj)
                         break
@@ -160,7 +160,7 @@ def get_lineup(ds, players, teams, locked, max_point):
         position_cap = solver.Constraint(min_limit, max_limit)
 
         for i, player in enumerate(players):
-            if player.position in position:
+            if set(player.actual_position.split('/')).intersection(set(position.split(','))):
                 position_cap.SetCoefficient(variables[i], 1)
 
     # at most 4 players from one team (yahoo)

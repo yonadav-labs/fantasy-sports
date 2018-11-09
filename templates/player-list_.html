@@ -14,7 +14,7 @@
       <tr>
         <td><input type="checkbox" name="ids" {% if not ii.injury %} checked="" {% endif %} value="{{ ii.id }}"></td>
         <td style="cursor: pointer;" onclick="pr_click(this)">
-          <img src="{{ ii.avatar }}" height="30" class="mr-2"> {{ ii.position }}
+          <img src="{{ ii.avatar }}" height="30" class="mr-2"> {{ ii.actual_position }}
         </td>
         <td>
           <a href="#/players/{{ ii.id }}">
