@@ -20,6 +20,11 @@ from general.color import *
 
 POSITION = ['PG', 'SG', 'SF', 'PF', 'C']
 
+CSV_FIELDS = {
+    'FanDuel': ['PG', 'PG', 'SG', 'SG', 'SF', 'SF', 'PF', 'PF', 'C'],
+    'DraftKings': ['PG', 'SG', 'SF', 'PF', 'C', 'G', 'F', 'UTIL'],
+    'Yahoo': ['PG', 'SG', 'G', 'SF', 'PF', 'F', 'C', 'UTIL']
+}
 
 def _get_game_today():
     return Game.objects.all()
@@ -36,15 +41,19 @@ def lineup_builder(request):
     return render(request, 'lineup-builder.html', locals())
 
 
-def lineup(request):
+def lineup_optimizer(request):
     data_sources = DATA_SOURCE
     games = _get_game_today()
-    return render(request, 'lineup.html', locals())
+    return render(request, 'lineup-optimizer.html', locals())
 
 
 @csrf_exempt
-def fav_player(request):
+def build_lineup(request):
+    ds = request.POST.get('ds')
     uid = request.POST.get('uid')
+    player = Player.objects.all().first()
+    players = [ { 'pos':ii, 'player': player } for ii in CSV_FIELDS[ds]]
+
     if uid:
         if uid == "-1":
             FavPlayer.objects.all().delete()
@@ -55,10 +64,9 @@ def fav_player(request):
             else:
                 FavPlayer.objects.create(player=player)
 
-    players = [ii for ii in FavPlayer.objects.all()]
-    players = sorted(players, key=Roster().fav_position_order)
+    # players = [ii for ii in FavPlayer.objects.all()]
 
-    return HttpResponse(render_to_string('fav-body.html', locals()))
+    return HttpResponse(render_to_string('lineup-body.html', locals()))
 
 
 @csrf_exempt
@@ -178,14 +186,6 @@ def get_num_lineups(player, lineups):
         if ii.is_member(player):
             num = num + 1
     return num
-
-
-CSV_FIELDS = {
-    'FanDuel': ['PG', 'PG', 'SG', 'SG', 'SF', 'SF', 'PF', 'PF', 'C'],
-    'DraftKings': ['PG', 'SG', 'SF', 'PF', 'C', 'G', 'F', 'UTIL'],
-    'Yahoo': ['PG', 'SG', 'G', 'SF', 'PF', 'F', 'C', 'UTIL'],
-    'Fanball': ['PG', 'SG', 'SF', 'PF', 'C', 'G', 'F/C', 'UTIL']
-}
 
 
 def gen_lineups(request):

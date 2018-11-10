@@ -8,7 +8,7 @@
     <div class="row">
       <div class="col-md-12 mb-4">
         <h5 class="mb-4">Lineup Builder</h5>
-
+        <a class="float-right mr-2" style="margin-top: -52px;" href="/lineup-optimizer">lineup optimizer</a>
         <h6 class="text-success">- Game Slates</h6>
         <div class="slate pl-3 pt-1 mb-2">
           {% for game in games %}
@@ -58,35 +58,7 @@
         </div>
       </div>
 
-      <div class="col-md-5 pl-4" id="div-result">
-        <div class="pb-2 e34tuh43">
-          <div class="lineups p-2">
-            <table class="table table-hover table-responsive-md">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Position</th>
-                  <th>Team</th>
-                  <th>Lineups</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for ii in players_ %}
-                  <tr>
-                    <td>
-                      <a href="#/players/{{ ii.id }}">
-                        <img src="{{ ii.avatar }}" height="30" class="mr-2">{{ ii.name }}
-                      </a>
-                    </td>
-                    <td>{{ ii.position }}</td>
-                    <td>{{ ii.team }}</td>
-                    <td>{{ ii.lineups }}</td>
-                  </tr>
-                {% endfor %}
-              </tbody>  
-            </table>
-          </div>
-        </div>
+      <div class="col-md-5 pl-0" id="div-lineup">
       </div>
     </div>
   </form>

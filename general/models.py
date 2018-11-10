@@ -7,8 +7,6 @@ DATA_SOURCE = (
     ('DraftKings', 'DraftKings'),
     ('FanDuel', 'FanDuel'),
     ('Yahoo', 'Yahoo'),
-    # ('Fanball', 'Fanball'),
-    # ('FantasyDraft', 'FantasyDraft')
 )
 
 class Player(models.Model):
@@ -107,14 +105,3 @@ class Game(models.Model):
 
     def __str__(self):
         return '{} - {}'.format(self.home_team, self.visit_team)
-
-
-# Team Matchup Sheet Cache
-class TMSCache(models.Model):
-    team = models.CharField(max_length=10)
-    type = models.IntegerField()
-    body = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    def __str__(self):
-        return self.team

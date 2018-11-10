@@ -30,8 +30,6 @@
       </a>
       <div class="dropdown-menu">
         <a class="dropdown-item" href="/lineup">Lineup Optimizer</a>
-        <a class="dropdown-item" href="/player-match-up-board">Player Match-up Board</a>
-        <a class="dropdown-item" href="/team-match-up-board">Team Match-up Board</a>
       </div>
     </li>
   </ul>
@@ -40,21 +38,11 @@
 <div class="container-fluid">
   {% block content %}
   {% endblock %}
-  <div class="fav-wrapper show-fav d-none">
-    <div class="fav-header">
-      <div class="fav-title"><i class="fa fa-thumbs-up"></i> Favorites</div>
-      <div class="fav-close"><i class="fa fa-window-maximize d-none"></i><i class="fa fa-window-minimize"></i></div>
-      <div class="fav-close fav-remove"><i class="fa fa-trash-alt"></i></div>
-    </div>
-    <div class="fav-body">
-    </div>
-  </div> 
 </div>
 
 {% block script %}
 {% endblock %}
 
-<script type="text/javascript" src="/static/js/common.js"></script>
 </body>
 </html>
 

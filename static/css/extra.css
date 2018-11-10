@@ -386,3 +386,19 @@ input[type="search"]::-webkit-search-cancel-button {
     margin-top: 36px;
     margin-bottom: 15px;
 }
+
+.j89g893t34 {
+    margin-top: 38px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    background: white;
+    font-size: 13px;
+}
+
+.j89g893t34 th {
+    font-size: 14px;
+}
+
+.j89g893t34 td {
+    padding: .44rem .6rem !important;
+}

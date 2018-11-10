@@ -8,7 +8,12 @@ $(function() {
   });
 
   $('.nav-tabs.ds .nav-link').click(function () {
-    $('#div-result').html('');
+    if ($('#div-result').length > 0) {  // optimizer
+      $('#div-result').html('');
+    } else {
+      build_lineup($(this).text());
+    }
+
     $('#ds').val($(this).text());
   });
 
@@ -79,6 +84,14 @@ $(function() {
     filterTable();
   })
 })
+
+function build_lineup(ds) {
+  $.post( "/build-lineup", {
+    ds: ds
+  }, function( data ) {
+    $("#div-lineup").html(data);
+  });
+}
 
 function pr_click(obj) {
   var checked = $(obj).parent().find('input').prop("checked");
