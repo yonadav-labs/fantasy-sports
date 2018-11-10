@@ -11,7 +11,7 @@ $(function() {
     if ($('#div-result').length > 0) {  // optimizer
       $('#div-result').html('');
     } else {
-      build_lineup($(this).text());
+      build_lineup($(this).text(), null);
     }
 
     $('#ds').val($(this).text());
@@ -85,11 +85,16 @@ $(function() {
   })
 })
 
-function build_lineup(ds) {
+function build_lineup(ds, pid) {
+  if (!ds) {
+    ds = $('.nav-tabs.ds .nav-link.active').text();
+  }
+
   $.post( "/build-lineup", {
+    pid: pid,
     ds: ds
   }, function( data ) {
-    $("#div-lineup").html(data);
+    $("#div-lineup").html(data.html);
   });
 }
 
@@ -127,17 +132,39 @@ function getPlayers () {
 }  
 
 function toggleLock(obj, pid) {
-  if ($('.fa-lock').length == 7 && $(obj).hasClass('fa-lock-open')) {
-    alert('You cannot add more locked players.');
-    return false;
-  }
-
-  $(obj).toggleClass('fa-lock-open');
-  $(obj).toggleClass('fa-lock');
-
-  if ($(obj).hasClass('fa-lock')) {
-    $('#frm-player').append(`<input type="hidden" name="locked" value="${pid}" id="lock${pid}">`);
+  if ($('#div-lineup').length > 0) {
+    var ds = $('.nav-tabs.ds .nav-link.active').text();
+    $.post( "/build-lineup", {
+      pid: pid,
+      ds: ds
+    }, function( data ) {
+      $("#div-lineup").html(data.html);
+      if (data.msg) {
+        alert(data.msg);
+      } else {
+        $(obj).toggleClass('fa-lock-open');
+        $(obj).toggleClass('fa-lock');      
+      }
+    });
   } else {
-    $(`#lock${pid}`).remove();
+    if ($('.fa-lock').length == 7 && $(obj).hasClass('fa-lock-open')) {
+      alert('You cannot add more locked players.');
+      return false;
+    }
+
+    $(obj).toggleClass('fa-lock-open');
+    $(obj).toggleClass('fa-lock');
+
+    if ($(obj).hasClass('fa-lock')) {
+      $('#frm-player').append(`<input type="hidden" name="locked" value="${pid}" id="lock${pid}">`);
+    } else {
+      $(`#lock${pid}`).remove();
+    }
   }
+}
+
+function export_lineup(e) {
+  e.preventDefault();
+  location.href = '/export-manual-lineup'; 
+  return false;
 }

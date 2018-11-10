@@ -14,27 +14,27 @@
       <tbody>
         {% for ii in players %}
           <tr>
-            <td><i class="fas fa-times-circle pr-2 pt-2" onclick="build_lineup(this, {{ ii.id }});"></i>{{ ii.pos }}</td>
+            <td><i class="fas fa-times-circle pr-2 pt-2" onclick="build_lineup('', -{{ ii.player.id }});"></i>{{ ii.pos }}</td>
             <td colspan="3">
               <a href="/players/{{ ii.player.id }}">
                 <img src="{{ ii.player.avatar }}" height="28" class="mr-2">{{ ii.player.first_name }} {{ ii.player.last_name }}
               </a>
             </td>
             <td>{{ ii.player.team }}</td>
-            <td class="text-right pr-3">{% if ds != 'Yahoo' %}${% endif %} {{ ii.player.salary|floatformat:0 }}</td>
+            <td class="text-right pr-3">{% if ds != 'Yahoo' and ii.player %}${% endif %} {{ ii.player.salary|floatformat:0 }}</td>
             <td class="text-center">{{ ii.player.proj_points }}</td>
           </tr>
         {% endfor %}
-        <tr>
-          <td colspan="5">Rem/Player: $ 6900</td>
-          <td class="text-right pr-3">$ 12000</td>
-          <td class="text-center">128.2</td>
+        <tr class="">
+          <td colspan="5">Rem / Player: {% if ds != 'Yahoo' %}${% endif %} {{ rem }}</td>
+          <td class="text-right pr-3">{% if ds != 'Yahoo' %}${% endif %} {{ sum_salary }}</td>
+          <td class="text-center">{{ sum_proj }}</td>
         </tr>
       </tbody>  
     </table>
   </div>
   <div class="pl-2 col-md-10 mb-2 mt-2">
-    <button class="btn btn-sm btn-success btn-export">Export</button>
-    <a class="btn btn-sm btn-success btn-clear">Clear</a>
+    <button class="btn btn-sm btn-success" {% if not full %}disabled{% endif %} onclick="export_lineup(event);">Export</button>
+    <button class="btn btn-sm btn-success" onclick="build_lineup('', 123456789);">Clear</button>
   </div>
 </div>

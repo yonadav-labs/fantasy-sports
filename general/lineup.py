@@ -57,7 +57,6 @@ class Roster:
             pos = {
                 'DraftKings': ['PG', 'SG', 'SF', 'PF', 'C', 'PG,SG', 'SF,PF'],
                 'Yahoo': ['PG', 'SG', 'PG,SG', 'SF', 'PF', 'SF,PF', 'C'],
-                'Fanball': ['PG', 'SG', 'SF', 'PF', 'C', 'PG,SG', 'SF,PF,C']
             }
             pos = pos[ds]
             players = list(self.players)
@@ -103,15 +102,6 @@ POSITION_LIMITS = {
                 ["C", 1, 2],
                 ["PG,SG", 3, 4],
                 ["SF,PF", 3, 4]
-            ],
-    'Fanball': [
-                ["PG", 1, 3],
-                ["SG", 1, 3],
-                ["SF", 1, 3],
-                ["PF", 1, 3],
-                ["C", 1, 3],
-                ["PG,SG", 3, 4],
-                ["SF,PF", 3, 4]
             ]
 }
 
@@ -119,14 +109,12 @@ SALARY_CAP = {
     'FanDuel': 60000,
     'DraftKings': 50000,
     'Yahoo': 200,
-    'Fanball': 55000
 }
 
 ROSTER_SIZE = {
     'FanDuel': 9,
     'DraftKings': 8,
     'Yahoo': 8,
-    'Fanball': 8
 }
 
 

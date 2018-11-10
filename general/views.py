@@ -50,23 +50,68 @@ def lineup_optimizer(request):
 @csrf_exempt
 def build_lineup(request):
     ds = request.POST.get('ds')
-    uid = request.POST.get('uid')
-    player = Player.objects.all().first()
-    players = [ { 'pos':ii, 'player': player } for ii in CSV_FIELDS[ds]]
+    pid = request.POST.get('pid')
+    request.session['ds'] = ds
+    lineup = request.session.get('lineup', [{ 'pos':ii, 'player': '' } for ii in CSV_FIELDS[ds]])
 
-    if uid:
-        if uid == "-1":
-            FavPlayer.objects.all().delete()
-        else:
-            player = Player.objects.filter(uid=uid).first()
-            if FavPlayer.objects.filter(player=player).exists():
-                FavPlayer.objects.filter(player=player).delete()
+    msg = ''
+
+    if pid == "123456789":  # remove all players
+        del request.session['lineup']
+    elif '-' in pid:        # remove a player
+        pid = pid.strip('-')
+        for ii in lineup:
+            if ii['player'] == pid:
+                ii['player'] = ''
+    elif pid:               # add a player
+        # check whether he is available
+        sum_salary = 0
+        available = False
+        for ii in lineup:
+            if ii['player']:
+                player = Player.objects.get(id=ii['player'])
+                sum_salary += player.salary
+
+        player = Player.objects.get(id=pid)
+        if SALARY_CAP[ds] >= sum_salary + player.salary:
+            for ii in lineup:
+                if not ii['player']:
+                    if ii['pos'] == 'UTIL' or ii['pos'] in player.actual_position:
+                        available = True
+                        ii['player'] = pid
+                        break
+            if available:
+                # save lineup
+                request.session['lineup'] = lineup
             else:
-                FavPlayer.objects.create(player=player)
+                msg = 'He is not applicable to any position.'
+        else:
+            msg = 'Lineup salary exceeds the salary cap.'
 
-    # players = [ii for ii in FavPlayer.objects.all()]
+    players = []
+    sum_proj = 0
+    sum_salary = 0
+    num_players = 0
 
-    return HttpResponse(render_to_string('lineup-body.html', locals()))
+    for ii in lineup:
+        if ii['player']:
+            player = Player.objects.get(id=ii['player'])
+            num_players += 1
+            sum_salary += player.salary
+            sum_proj += player.proj_points
+        else:
+            player = {}
+        players.append({ 'pos':ii['pos'], 'player': player })
+
+    rem = (SALARY_CAP[ds] - sum_salary) / (ROSTER_SIZE[ds] - num_players) if ROSTER_SIZE[ds] != num_players else 0
+    full = num_players == ROSTER_SIZE[ds]
+
+    result = { 
+        'html': render_to_string('lineup-body.html', locals()),
+        'msg': msg
+    }
+
+    return JsonResponse(result, safe=False)
 
 
 @csrf_exempt
@@ -234,6 +279,24 @@ def export_lineups(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str( os.path.basename( path ) ) # same here        
     return response
 
+def export_manual_lineup(request):
+    lineup = request.session.get('lineup')
+    ds = request.session.get('ds')
+    csv_fields = [ii['pos'] for ii in lineup]
+    players = [Player.objects.get(id=ii['player']) for ii in lineup]
+    path = "/tmp/.fantasy_nba_{}.csv".format(ds.lower())
+
+    with open(path, 'w') as f:
+        f.write(','.join(csv_fields)+'\n')
+        f.write(','.join(['{} {}'.format(ii.first_name, ii.last_name) for ii in players]))
+    
+    wrapper = FileWrapper( open( path, "r" ) )
+    content_type = mimetypes.guess_type( path )[0]
+
+    response = HttpResponse(wrapper, content_type = content_type)
+    response['Content-Length'] = os.path.getsize( path ) # not FileField instance
+    response['Content-Disposition'] = 'attachment; filename=%s' % smart_str( os.path.basename( path ) ) # same here        
+    return response
 
 @csrf_exempt
 def update_point(request):
