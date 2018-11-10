@@ -7,7 +7,7 @@
     {% csrf_token %}
     <div class="row">
       <div class="col-md-12 mb-4">
-        <h5 class="mb-4">Lineup Optimizer</h5>
+        <h5 class="mb-4">Lineup Builder</h5>
 
         <h6 class="text-success">- Game Slates</h6>
         <div class="slate pl-3 pt-1 mb-2">
@@ -58,49 +58,38 @@
         </div>
       </div>
 
-      <div class="col-md-5 pl-4" id="div-result"></div>
-      <div class="pl-4 col-md-10 mb-5">
-        <button class="btn btn-sm btn-success btn-export">Export</button>
-        <a class="btn btn-sm btn-success btn-calc">Calculate</a>
-        <a class="btn btn-sm btn-success btn-clear">Clear</a>
-        <input type="number" class="mr-3 num-lineups float-right" name="num-lineups" value="5" min="1" onKeyPress="if(this.value.length==3) return false;">
-        <span class="float-right pt-1 mr-2">Number of Lineups:</span>
+      <div class="col-md-5 pl-4" id="div-result">
+        <div class="pb-2 e34tuh43">
+          <div class="lineups p-2">
+            <table class="table table-hover table-responsive-md">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Position</th>
+                  <th>Team</th>
+                  <th>Lineups</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for ii in players_ %}
+                  <tr>
+                    <td>
+                      <a href="#/players/{{ ii.id }}">
+                        <img src="{{ ii.avatar }}" height="30" class="mr-2">{{ ii.name }}
+                      </a>
+                    </td>
+                    <td>{{ ii.position }}</td>
+                    <td>{{ ii.team }}</td>
+                    <td>{{ ii.lineups }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>  
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </form>
-  <div class="modal fade" id="dlg-export">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Exporting Lineups</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body">
-          The csv file will be downloaded shortly.
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="modal fade" id="dlg-preview">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Preview Lineups</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success btn-export" data-dismiss="modal">Export</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>  
 {% endblock %}
 

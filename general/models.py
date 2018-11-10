@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 from django.db import models
 
 DATA_SOURCE = (
-    ('FanDuel', 'FanDuel'),
     ('DraftKings', 'DraftKings'),
+    ('FanDuel', 'FanDuel'),
     ('Yahoo', 'Yahoo'),
     # ('Fanball', 'Fanball'),
     # ('FantasyDraft', 'FantasyDraft')

@@ -30,6 +30,12 @@ def players(request):
     return render(request, 'players.html', locals())
 
 
+def lineup_builder(request):
+    data_sources = DATA_SOURCE
+    games = _get_game_today()
+    return render(request, 'lineup-builder.html', locals())
+
+
 def lineup(request):
     data_sources = DATA_SOURCE
     games = _get_game_today()
@@ -520,7 +526,7 @@ def gen_lineups(request):
 
     players_ = [{ 'name': '{} {}'.format(ii.first_name, ii.last_name), 
                   'team': ii.team, 
-                  'position': ii.position,
+                  'position': ii.actual_position,
                   'id': ii.id, 
                   'avatar': ii.avatar, 
                   'lineups': get_num_lineups(ii, lineups)} 
