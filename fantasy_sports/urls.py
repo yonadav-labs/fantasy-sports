@@ -33,8 +33,4 @@ urlpatterns = [
     url(r'^export_lineups', export_lineups, name="export_lineups"),
     url(r'^update-point', update_point, name="update_point"),
     url(r'^player-games', player_games, name="player_games"),
-    url(r'^player-match-up-board', player_match_up_board, name="player_match_up_board"),
-    url(r'^player-match-up', player_match_up, name="player_match_up"),
-    url(r'^team-match-up-board', team_match_up_board, name="team_match_up_board"),
-    url(r'^team-match-up', team_match_up, name="team_match_up"),
 ]
