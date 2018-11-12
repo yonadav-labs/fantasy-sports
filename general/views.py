@@ -57,7 +57,7 @@ def build_lineup(request):
     msg = ''
 
     if pid == "123456789":  # remove all players
-        del request.session['lineup']
+        lineup = [{ 'pos':ii, 'player': '' } for ii in CSV_FIELDS[ds]]
     elif '-' in pid:        # remove a player
         pid = pid.strip('-')
         for ii in lineup:

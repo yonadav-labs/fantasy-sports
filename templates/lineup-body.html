@@ -26,8 +26,8 @@
           </tr>
         {% endfor %}
         <tr class="">
-          <td colspan="5">Rem / Player: {% if ds != 'Yahoo' %}${% endif %} {{ rem }}</td>
-          <td class="text-right pr-3">{% if ds != 'Yahoo' %}${% endif %} {{ sum_salary }}</td>
+          <td colspan="5">Rem / Player: {% if ds != 'Yahoo' %}${% endif %} {{ rem|floatformat:0 }}</td>
+          <td class="text-right pr-3">{% if ds != 'Yahoo' %}${% endif %} {{ sum_salary|floatformat:0 }}</td>
           <td class="text-center">{{ sum_proj }}</td>
         </tr>
       </tbody>  
@@ -35,6 +35,6 @@
   </div>
   <div class="pl-2 col-md-10 mb-2 mt-2">
     <button class="btn btn-sm btn-success" {% if not full %}disabled{% endif %} onclick="export_lineup(event);">Export</button>
-    <button class="btn btn-sm btn-success" onclick="build_lineup('', 123456789);">Clear</button>
+    <a class="btn btn-sm btn-success" style="color: white;" onclick="build_lineup('', 123456789);">Clear</a>
   </div>
 </div>
