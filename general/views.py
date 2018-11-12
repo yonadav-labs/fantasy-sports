@@ -26,8 +26,8 @@ CSV_FIELDS = {
     'Yahoo': ['PG', 'SG', 'G', 'SF', 'PF', 'F', 'C', 'UTIL']
 }
 
-def _get_game_today():
-    return Game.objects.all()
+def _get_game_today(ds='FanDuel'):
+    return Game.objects.filter(data_source=ds)
 
 
 def players(request):

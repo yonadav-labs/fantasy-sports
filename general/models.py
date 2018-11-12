@@ -102,6 +102,7 @@ class Game(models.Model):
     ml = models.CharField(max_length=20)
     date = models.DateTimeField()
     game_status = models.CharField(max_length=50, choices=GAME_STATUS, default='started')
-
+    data_source = models.CharField(max_length=30, choices=DATA_SOURCE, default='FanDuel')
+    
     def __str__(self):
         return '{} - {}'.format(self.home_team, self.visit_team)

@@ -21,17 +21,11 @@ class PlayerGameAdmin(admin.ModelAdmin):
 
 
 class GameAdmin(admin.ModelAdmin):
-    list_display = ['home_team', 'visit_team', 'ou', 'ml', 'game_status', 'date']
+    list_display = ['home_team', 'visit_team', 'ou', 'ml', 'game_status', 'date', 'data_source']
     search_fields = ['home_team', 'visit_team']
-    list_filter = ['game_status']
-
-
-class TMSCacheAdmin(admin.ModelAdmin):
-    list_display = ['team', 'type', 'created_at']
+    list_filter = ['game_status', 'data_source']
 
 
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(Game, GameAdmin)
 # admin.site.register(PlayerGame, PlayerGameAdmin)
-# admin.site.register(TMSCache, TMSCacheAdmin)
-# admin.site.register(FavPlayer)
