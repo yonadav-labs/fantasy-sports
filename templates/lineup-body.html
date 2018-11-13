@@ -14,7 +14,7 @@
       <tbody>
         {% for ii in players %}
           <tr>
-            <td><i class="fas fa-times-circle pr-2 pt-2" onclick="build_lineup('', -{{ ii.player.id }});"></i>{{ ii.pos }}</td>
+            <td><i class="fas fa-times-circle pr-2 pt-2" onclick="build_lineup(-{{ ii.player.id }});"></i>{{ ii.pos }}</td>
             <td colspan="3">
               <a href="/players/{{ ii.player.id }}">
                 <img src="{{ ii.player.avatar }}" height="28" class="mr-2">{{ ii.player.first_name }} {{ ii.player.last_name }}
@@ -35,6 +35,6 @@
   </div>
   <div class="pl-2 col-md-10 mb-2 mt-2">
     <button class="btn btn-sm btn-success" {% if not full %}disabled{% endif %} onclick="export_lineup(event);">Export</button>
-    <a class="btn btn-sm btn-success" style="color: white;" onclick="build_lineup('', 123456789);">Clear</a>
+    <a class="btn btn-sm btn-success" style="color: white;" onclick="build_lineup(123456789);">Clear</a>
   </div>
 </div>

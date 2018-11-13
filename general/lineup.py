@@ -152,18 +152,19 @@ def get_lineup(ds, players, teams, locked, max_point):
                 position_cap.SetCoefficient(variables[i], 1)
 
     # at most 4 players from one team (yahoo)
-    for team in teams:
-        team_cap = solver.Constraint(0, 6)
-        for i, player in enumerate(players):
-            if team == player.team:
-                team_cap.SetCoefficient(variables[i], 1)
+    if ds == 'Yahoo':
+        for team in teams:
+            team_cap = solver.Constraint(0, 6)
+            for i, player in enumerate(players):
+                if team == player.team:
+                    team_cap.SetCoefficient(variables[i], 1)
 
     size_cap = solver.Constraint(ROSTER_SIZE[ds], ROSTER_SIZE[ds])
     for variable in variables:
         size_cap.SetCoefficient(variable, 1)
 
     solution = solver.Solve()
-
+    print solution, '================'
     if solution == solver.OPTIMAL:
         roster = Roster()
 
@@ -177,8 +178,11 @@ def get_lineup(ds, players, teams, locked, max_point):
 def calc_lineups(players, num_lineups, locked=[], ds='FanDuel'):
     result = []
 
+    import pdb
+
     max_point = 10000
     teams = set([ii.team for ii in players])
+    # pdb.set_trace()
     cnt = 0
     while True:
         roster = get_lineup(ds, players, teams, locked, max_point)

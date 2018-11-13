@@ -1,20 +1,20 @@
-$(function() {
-  $('.nav-tabs.ds a').on('shown.bs.tab', function(event) {
-    getPlayers();
-  });
+var ds = 'DraftKings';
 
-  $('.slate input').on('change', function() {
+$(function() {
+  $('.slate input').on('change', function() {   // game slates checkbox
     getPlayers();
   });
 
   $('.nav-tabs.ds .nav-link').click(function () {
+    ds = $(this).text();
+    getPlayers();
     if ($('#div-result').length > 0) {  // optimizer
       $('#div-result').html('');
     } else {
-      build_lineup($(this).text(), null);
+      build_lineup(null);
     }
 
-    $('#ds').val($(this).text());
+    $('#ds').val(ds);
   });
 
   $('.nav-tabs.ds .nav-link:first').click();
@@ -85,16 +85,24 @@ $(function() {
   })
 })
 
-function build_lineup(ds, pid) {
-  if (!ds) {
-    ds = $('.nav-tabs.ds .nav-link.active').text();
-  }
-
+function build_lineup(pid) {
   $.post( "/build-lineup", {
     pid: pid,
     ds: ds
   }, function( data ) {
     $("#div-lineup").html(data.html);
+    $('.fas.lock').removeClass('fa-lock');
+    $('.fas.lock').addClass('fa-lock-open');
+
+    for (ii in data.pids) {
+      console.log(`.plb-${data.pids[ii]}`);
+      $(`.plb-${data.pids[ii]}`).toggleClass('fa-lock-open');
+      $(`.plb-${data.pids[ii]}`).toggleClass('fa-lock');
+    }
+
+    if (data.msg) {
+      alert(data.msg);
+    }
   });
 }
 
@@ -119,7 +127,6 @@ function getPlayers () {
     games += $(this).val()+';';
   })
 
-  var ds = $('.nav-tabs.ds .nav-link.active').text();
   $.post( "/get-players", 
     { 
       ds: ds,
@@ -132,20 +139,12 @@ function getPlayers () {
 }  
 
 function toggleLock(obj, pid) {
-  if ($('#div-lineup').length > 0) {
-    var ds = $('.nav-tabs.ds .nav-link.active').text();
-    $.post( "/build-lineup", {
-      pid: pid,
-      ds: ds
-    }, function( data ) {
-      $("#div-lineup").html(data.html);
-      if (data.msg) {
-        alert(data.msg);
-      } else {
-        $(obj).toggleClass('fa-lock-open');
-        $(obj).toggleClass('fa-lock');      
-      }
-    });
+  if ($('#div-lineup').length > 0) {    // lineup builder
+    if ($(obj).hasClass('fa-lock')) {
+      pid = -pid;
+    }
+
+    build_lineup(pid);
   } else {
     if ($('.fa-lock').length == 7 && $(obj).hasClass('fa-lock-open')) {
       alert('You cannot add more locked players.');

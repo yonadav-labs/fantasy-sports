@@ -5,7 +5,6 @@ import json
 import mimetypes
 import datetime
 from wsgiref.util import FileWrapper
-import pdb
 
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -52,12 +51,14 @@ def build_lineup(request):
     ds = request.POST.get('ds')
     pid = request.POST.get('pid')
     request.session['ds'] = ds
-    lineup = request.session.get('lineup', [{ 'pos':ii, 'player': '' } for ii in CSV_FIELDS[ds]])
+
+    lineup = request.session.get(ds+'_lineup', [{ 'pos':ii, 'player': '' } for ii in CSV_FIELDS[ds]])
 
     msg = ''
 
     if pid == "123456789":  # remove all players
         lineup = [{ 'pos':ii, 'player': '' } for ii in CSV_FIELDS[ds]]
+        request.session[ds+'_lineup'] = lineup
     elif '-' in pid:        # remove a player
         pid = pid.strip('-')
         for ii in lineup:
@@ -82,7 +83,7 @@ def build_lineup(request):
                         break
             if available:
                 # save lineup
-                request.session['lineup'] = lineup
+                request.session[ds+'_lineup'] = lineup
             else:
                 msg = 'He is not applicable to any position.'
         else:
@@ -92,9 +93,11 @@ def build_lineup(request):
     sum_proj = 0
     sum_salary = 0
     num_players = 0
+    pids = []
 
     for ii in lineup:
         if ii['player']:
+            pids.append(ii['player'])
             player = Player.objects.get(id=ii['player'])
             num_players += 1
             sum_salary += player.salary
@@ -108,6 +111,7 @@ def build_lineup(request):
 
     result = { 
         'html': render_to_string('lineup-body.html', locals()),
+        'pids': pids,
         'msg': msg
     }
 
@@ -275,13 +279,13 @@ def export_lineups(request):
     content_type = mimetypes.guess_type( path )[0]
 
     response = HttpResponse(wrapper, content_type = content_type)
-    response['Content-Length'] = os.path.getsize( path ) # not FileField instance
-    response['Content-Disposition'] = 'attachment; filename=%s' % smart_str( os.path.basename( path ) ) # same here        
+    response['Content-Length'] = os.path.getsize( path )
+    response['Content-Disposition'] = 'attachment; filename=%s' % smart_str( os.path.basename( path ) )
     return response
 
 def export_manual_lineup(request):
-    lineup = request.session.get('lineup')
     ds = request.session.get('ds')
+    lineup = request.session.get(ds+'_lineup')
     csv_fields = [ii['pos'] for ii in lineup]
     players = [Player.objects.get(id=ii['player']) for ii in lineup]
     path = "/tmp/.fantasy_nba_{}.csv".format(ds.lower())
@@ -294,8 +298,8 @@ def export_manual_lineup(request):
     content_type = mimetypes.guess_type( path )[0]
 
     response = HttpResponse(wrapper, content_type = content_type)
-    response['Content-Length'] = os.path.getsize( path ) # not FileField instance
-    response['Content-Disposition'] = 'attachment; filename=%s' % smart_str( os.path.basename( path ) ) # same here        
+    response['Content-Length'] = os.path.getsize( path )
+    response['Content-Disposition'] = 'attachment; filename=%s' % smart_str( os.path.basename( path ) )
     return response
 
 @csrf_exempt

@@ -31,7 +31,7 @@
         </td>
         <td>{{ ii|salery_per_projection:ds }}</td>
         <td>
-          <i class="fas fa-lock-open fa-md lock unlocked" onclick="toggleLock(this, {{ ii.id }});"></i>
+          <i class="fas fa-lock-open fa-md lock unlocked plb-{{ ii.id }}" onclick="toggleLock(this, {{ ii.id }});"></i>
         </td>
       </tr>
     {% endfor %}
