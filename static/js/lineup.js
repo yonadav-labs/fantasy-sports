@@ -7,14 +7,8 @@ $(function() {
 
   $('.nav-tabs.ds .nav-link').click(function () {
     ds = $(this).text();
-    getPlayers();
-    if ($('#div-result').length > 0) {  // optimizer
-      $('#div-result').html('');
-    } else {
-      build_lineup(null);
-    }
-
     $('#ds').val(ds);
+    getPlayers();
   });
 
   $('.nav-tabs.ds .nav-link:first').click();
@@ -134,6 +128,12 @@ function getPlayers () {
     }, 
     function( data ) {
       $( "#div-players" ).html( data );
+      
+      if ($('#div-result').length > 0) {  // optimizer
+        $('#div-result').html('');
+      } else {
+        build_lineup(null);
+      }
     }
   );
 }  
