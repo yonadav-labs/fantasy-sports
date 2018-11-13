@@ -13,8 +13,9 @@ from general.models import *
 from general.views import *
 
 def get_games(data_source):
+    slate = 'Main' if data_source == 'Fanduel' else 'all'
     url = 'https://www.rotowire.com/daily/tables/schedule.php?sport=NBA&' + \
-          'site={}&type=main&slate=all'.format(data_source)
+          'site={}&type=main&slate={}'.format(data_source, slate)
 
     games = requests.get(url).json()
     if games:
