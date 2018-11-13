@@ -34,12 +34,6 @@ class Roster:
     def position_order(self, player):
         return self.POSITION_ORDER[player.position]
 
-    def fav_position_order(self, obj):
-        if obj.player.position in self.POSITION_ORDER:
-            return self.POSITION_ORDER[obj.player.position]
-        else:
-            return 100
-
     def dict_position_order(self, player):
         if player['pos'] in self.POSITION_ORDER:
             return self.POSITION_ORDER[player['pos']]
@@ -62,7 +56,7 @@ class Roster:
             players = list(self.players)
             for ii in pos:
                 for jj in players:
-                    if set(jj.actual_position.split('/')).intersection(set(ii.split(','))):
+                    if jj.position in ii:
                         s += str(jj) + ','
                         players.remove(jj)
                         break
@@ -118,16 +112,16 @@ ROSTER_SIZE = {
 }
 
 
-def get_lineup(ds, players, teams, locked, max_point):
+def get_lineup(ds, players, teams, locked, max_point, con_mul):
     solver = pywraplp.Solver('nba-lineup', pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
 
     variables = []
 
-    for player in players:
-        if player.id in locked:
-            variables.append(solver.IntVar(1, 1, str(player)))
+    for i, player in enumerate(players):
+        if player.id in locked and ds != 'DraftKings':
+            variables.append(solver.IntVar(1, 1, str(player)+str(i)))
         else:        
-            variables.append(solver.IntVar(0, 1, str(player)))
+            variables.append(solver.IntVar(0, 1, str(player)+str(i)))
 
     objective = solver.Objective()
     objective.SetMaximization()
@@ -148,7 +142,7 @@ def get_lineup(ds, players, teams, locked, max_point):
         position_cap = solver.Constraint(min_limit, max_limit)
 
         for i, player in enumerate(players):
-            if set(player.actual_position.split('/')).intersection(set(position.split(','))):
+            if player.position in position:
                 position_cap.SetCoefficient(variables[i], 1)
 
     # at most 4 players from one team (yahoo)
@@ -158,13 +152,22 @@ def get_lineup(ds, players, teams, locked, max_point):
             for i, player in enumerate(players):
                 if team == player.team:
                     team_cap.SetCoefficient(variables[i], 1)
+    elif ds == 'DraftKings':    # multi positional constraints
+        for ii in con_mul:
+            if players[ii[0]].id in locked:
+                mul_pos_cap = solver.Constraint(1, 1)
+            else:
+                mul_pos_cap = solver.Constraint(0, 1)
+
+            for jj in ii:
+                mul_pos_cap.SetCoefficient(variables[jj], 1)
 
     size_cap = solver.Constraint(ROSTER_SIZE[ds], ROSTER_SIZE[ds])
     for variable in variables:
         size_cap.SetCoefficient(variable, 1)
 
     solution = solver.Solve()
-    print solution, '================'
+
     if solution == solver.OPTIMAL:
         roster = Roster()
 
@@ -178,14 +181,32 @@ def get_lineup(ds, players, teams, locked, max_point):
 def calc_lineups(players, num_lineups, locked=[], ds='FanDuel'):
     result = []
 
-    import pdb
-
     max_point = 10000
     teams = set([ii.team for ii in players])
-    # pdb.set_trace()
     cnt = 0
+
+    con_mul = []
+    if ds == 'DraftKings':      # multi positional in DraftKings
+        players_ = []
+        idx = 0
+        for ii in players:
+            if len(ii.actual_position.split('/')) > 1:
+                p = vars(ii)
+                p.pop('_state')
+                ci_ = []
+                for jj in ii.actual_position.split('/'):
+                    ci_.append(idx)
+                    p['position'] = jj
+                    players_.append(Player(**p))
+                    idx += 1
+                con_mul.append(ci_)
+            else:
+                players_.append(ii)
+                idx += 1
+        players = players_
+
     while True:
-        roster = get_lineup(ds, players, teams, locked, max_point)
+        roster = get_lineup(ds, players, teams, locked, max_point, con_mul)
         cnt += 1
 
         if not roster or cnt > 30:
