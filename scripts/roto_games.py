@@ -21,17 +21,15 @@ def get_games(data_source):
     if games:
         Game.objects.filter(data_source=data_source).delete()
 
-        exclude_fields = ['exclude', 'home_score', 'visit_score', 'home_team_abbr', 
-                          'visit_team_abbr', 'weather_icon', 'home_logo', 'visit_logo']
+        fields = ['game_status', 'ml', 'home_team', 'visit_team']
         for ii in games:
-            for jj in exclude_fields:
-                ii.pop(jj)
-            ii['data_source'] = data_source
-            ii['date'] = datetime.datetime.strptime(ii['date'].split(' ')[1], '%I:%M%p')
+            defaults = { key: str(ii[key]).replace(',', '') for key in fields }
+            defaults['date'] = datetime.datetime.strptime(ii['date'].split(' ')[1], '%I:%M%p')
             # date is not used
-            ii['date'] = datetime.datetime.combine(datetime.date.today(), ii['date'].time())
-            ii['ou'] = float(ii['ou']) if ii['ou'] else 0
-            Game.objects.create(**ii)
+            defaults['date'] = datetime.datetime.combine(datetime.date.today(), defaults['date'].time())
+            defaults['ou'] = float(ii['ou']) if ii['ou'] else 0
+            defaults['data_source'] = data_source
+            Game.objects.create(**defaults)
 
 if __name__ == "__main__":
     for ds in DATA_SOURCE:
