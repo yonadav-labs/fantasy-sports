@@ -17,7 +17,10 @@
             <td><i class="fas fa-times-circle pr-2 pt-2" onclick="build_lineup(-{{ ii.player.id }});"></i>{{ ii.pos }}</td>
             <td colspan="3">
               <a href="/players/{{ ii.player.id }}">
-                <img src="{{ ii.player.avatar }}" height="28" class="mr-2">{{ ii.player.first_name }} {{ ii.player.last_name }}
+                <div class="float-left">
+                  <img src="{{ ii.player.avatar }}" height="28" class="mr-2">
+                </div>
+                <div class="a98ef3r3e">{{ ii.player.first_name }} {{ ii.player.last_name }}</div>
               </a>
             </td>
             <td>{{ ii.player.team }}</td>
