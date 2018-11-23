@@ -26,15 +26,15 @@ body {
     font-size: 0.81rem;
 }
 
-@media (min-width: 1200px) {
-    #dlg-preview .modal-lg {
-        max-width: 900px;
+@media only screen and (min-width: 1200px) {
+    .modal-lg {
+        max-width: 900px !important;
     }
 }
 
-@media (min-width: 1400px) {
-    #dlg-preview .modal-lg {
-        max-width: 1020px;
+@media only screen and (min-width: 1400px) {
+    .modal-lg {
+        max-width: 1020px !important;
     }
 }
 
