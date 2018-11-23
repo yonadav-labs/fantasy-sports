@@ -102,7 +102,7 @@ th {
 
 #div-players {
     overflow-y: scroll; 
-    height: calc(98vh - 300px);
+    height: 30vw;
 }
 
 #div-players td, 
@@ -229,7 +229,7 @@ table th {
 
 div.lineups {
     overflow-y: scroll; 
-    height: calc(98vh - 293px)
+    height: calc(30vw + 7px)
 }
 
 #search-player {
