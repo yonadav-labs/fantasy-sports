@@ -56,7 +56,7 @@
                     <td colspan="3"><a href="/players/{{ ii.id }}"><img src="{{ ii.avatar }}" height="24" class="mr-2">{{ ii.first_name }} {{ ii.last_name }}</a></td>
                     <td>{{ ii.position }}</td>
                     <td>{{ ii.team }}</td>
-                    <td colspan="2">$ {{ ii.salary|floatformat:2 }}</td>
+                    <td colspan="2">${{ ii.salary|floatformat:2 }}</td>
                     <td>{{ ii.minutes|floatformat:1 }}</td>
                     <td>{{ ii.proj_ceiling|floatformat:1 }}</td>
                     <td>{{ ii.proj_floor|floatformat:1 }}</td>

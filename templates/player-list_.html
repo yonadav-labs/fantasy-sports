@@ -25,7 +25,7 @@
             <div class="sub">{{ ii.team }} {{ ii.opponent1 }}</div>
           </a>
         </td>
-        <td class="text-right pr-3">{% if ds != 'Yahoo' %}${% endif %} {{ ii.salary|floatformat:0 }}</td>
+        <td class="text-right pr-3">{% if ds != 'Yahoo' %}${% endif %}{{ ii.salary|floatformat:0 }}</td>
         <td class="pl-3">
           <input type="number" min="0" class="form-control text-right pl-1 pr-0" step="0.1" data-id="{{ ii.id }}" value="{{ ii.proj_points }}" style="width: 60px;" onchange="change_point(this);" readonly="">
         </td>

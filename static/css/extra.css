@@ -23,8 +23,19 @@ body {
 }
 
 #dlg-preview .modal-lg {
-    max-width: 1020px;
     font-size: 0.81rem;
+}
+
+@media (min-width: 1200px) {
+    .modal-lg {
+        max-width: 900px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .modal-lg {
+        max-width: 1020px;
+    }
 }
 
 th {

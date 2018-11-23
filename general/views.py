@@ -259,7 +259,7 @@ def gen_lineups(request):
     ds = request.POST.get('ds')
     header = CSV_FIELDS[ds] + ['Spent', 'Projected']
     
-    rows = [ii.get_csv(ds).strip().split(',')+[ii.spent(), ii.projected()]
+    rows = [ii.get_csv(ds).strip().split(',')+[int(ii.spent()), ii.projected()]
             for ii in lineups]
 
     result = {

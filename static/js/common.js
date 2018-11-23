@@ -8,7 +8,6 @@ function inIframe () {
 if(inIframe()) {
     $('body').toggleClass('d-none');
 } else {
-    $('nav').toggleClass('d-none');
     $('.lineups-container').toggleClass('container');
     $('.lineups-container').toggleClass('container-iframe');
 }

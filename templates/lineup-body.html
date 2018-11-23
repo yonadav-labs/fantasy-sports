@@ -21,13 +21,13 @@
               </a>
             </td>
             <td>{{ ii.player.team }}</td>
-            <td class="text-right pr-3">{% if ds != 'Yahoo' and ii.player %}${% endif %} {{ ii.player.salary|floatformat:0 }}</td>
+            <td class="text-right pr-3">{% if ds != 'Yahoo' and ii.player %}${% endif %}{{ ii.player.salary|floatformat:0 }}</td>
             <td class="text-center">{{ ii.player.proj_points }}</td>
           </tr>
         {% endfor %}
         <tr class="">
-          <td colspan="5">Rem / Player: {% if ds != 'Yahoo' %}${% endif %} {{ rem|floatformat:0 }}</td>
-          <td class="text-right pr-3">{% if ds != 'Yahoo' %}${% endif %} {{ sum_salary|floatformat:0 }}</td>
+          <td colspan="5">Rem / Player: {% if ds != 'Yahoo' %}${% endif %}{{ rem|floatformat:0 }}</td>
+          <td class="text-right pr-3">{% if ds != 'Yahoo' %}${% endif %}{{ sum_salary|floatformat:0 }}</td>
           <td class="text-center">{{ sum_proj }}</td>
         </tr>
       </tbody>  
