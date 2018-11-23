@@ -27,14 +27,14 @@ body {
 }
 
 @media (min-width: 1200px) {
-    .modal-lg {
-        max-width: 900px !important;
+    #dlg-preview .modal-lg {
+        max-width: 900px;
     }
 }
 
 @media (min-width: 1400px) {
-    .modal-lg {
-        max-width: 1020px !important;
+    #dlg-preview .modal-lg {
+        max-width: 1020px;
     }
 }
 
