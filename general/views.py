@@ -12,6 +12,7 @@ from django.template.loader import render_to_string
 from django.utils.encoding import smart_str
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Avg, Q, Sum
+from django.views.decorators.clickjacking import xframe_options_exempt
 
 from general.models import *
 from general.lineup import *
@@ -34,12 +35,13 @@ def players(request):
     return render(request, 'players.html', locals())
 
 
+@xframe_options_exempt
 def lineup_builder(request):
     data_sources = DATA_SOURCE
     games = _get_game_today()
     return render(request, 'lineup-builder.html', locals())
 
-
+@xframe_options_exempt
 def lineup_optimizer(request):
     data_sources = DATA_SOURCE
     games = _get_game_today()
