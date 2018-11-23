@@ -2,7 +2,7 @@
 {% load extra %}
 
 {% block content %}
-<div class="container pt-3 mt-3 mb-3 lineups-container">
+<div class="container-iframe pt-3 mt-3 mb-3 lineups-container">
   <form id="frm-player" action="/export_lineups" method="POST">
     {% csrf_token %}
     <div class="row">

@@ -1,9 +1,20 @@
 html {
-    /*font-size: 70%;*/
+    font-size: 92%;
+}
+
+@media (min-width: 1600px) {
+    html {
+        font-size: 100%;
+    }
 }
 
 body {
     background: #5BC85B;
+}
+
+.container-iframe {
+    width: 100%;
+    padding: 15px;
 }
 
 .lineups-container {
@@ -100,9 +111,25 @@ th {
     color: #555;
 }
 
+div.lineups {
+    overflow-y: scroll; 
+    height: calc(40vw + 7px)
+}
+
+
 #div-players {
     overflow-y: scroll; 
-    height: 30vw;
+    height: 40vw;
+}
+
+@media (min-width: 1600px) {
+    div.lineups {
+        height: calc(30vw + 7px)
+    }
+
+    #div-players {
+        height: 30vw;
+    }
 }
 
 #div-players td, 
@@ -225,11 +252,6 @@ table th {
     border: 1px solid #ced4da;
     border-radius: .25rem;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-}
-
-div.lineups {
-    overflow-y: scroll; 
-    height: calc(30vw + 7px)
 }
 
 #search-player {

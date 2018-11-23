@@ -32,6 +32,8 @@ urlpatterns = [
     url(r'^export-manual-lineup', export_manual_lineup, name="export_manual_lineup"),
     url(r'^get-players', get_players, name="get_players"),
 
+    url(r'^iframe', iframe_test, name="iframe_test"),
+
     url(r'^players/(?P<pid>\d+)$', player_detail, name="player_detail"),
     url(r'^update-point', update_point, name="update_point"),
     url(r'^player-games', player_games, name="player_games"),
