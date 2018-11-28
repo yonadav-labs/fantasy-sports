@@ -130,13 +130,15 @@ th {
 
 div.lineups {
     overflow-y: scroll; 
-    height: calc(40vw + 7px)
+    height: calc(40vw + 7px);
+    min-height: 360px;
 }
 
 
 #div-players {
     overflow-y: scroll; 
     height: 40vw;
+    min-height: 360px;
 }
 
 @media (min-width: 1600px) {
@@ -236,7 +238,6 @@ table th {
 }
 
 .fas.lock {
-    padding-top: 10px;
     cursor: pointer;
 }
 
@@ -250,11 +251,11 @@ table th {
 }
 
 .btn-export {
-    width: 100px;
+    width: 95px;
 }
 
 .btn-clear {
-    width: 100px; 
+    width: 90px; 
     color: white !important;
 }
 

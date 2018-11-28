@@ -6,7 +6,7 @@
   <form id="frm-player" action="/export_lineups" method="POST">
     {% csrf_token %}
     <div class="row">
-      <div class="col-md-12 mb-4">
+      <div class="col-md-12 mb-3">
         <h5 class="mb-4">Lineup Optimizer</h5>
         <a class="float-right mr-2" style="margin-top: -52px;" href="/lineup-builder">lineup builder</a>
         <h6 class="text-success">- Game Slates</h6>
@@ -24,7 +24,7 @@
         </div>
       </div>
       <input type="hidden" name="ds" id="ds">
-      <div class="col-md-7 mb-4">
+      <div class="col-md-7 mb-4 pr-md-2">
         <ul class="nav nav-tabs ds">
           {% for ds in data_sources %}  
           <li class="nav-item">
@@ -58,13 +58,13 @@
         </div>
       </div>
 
-      <div class="col-md-5 pl-4" id="div-result"></div>
+      <div class="col-md-5 pl-md-2" id="div-result"></div>
       <div class="pl-4 col-md-10 mb-5">
-        <button class="btn btn-sm btn-success btn-export">Export</button>
-        <a class="btn btn-sm btn-success btn-calc">Calculate</a>
-        <a class="btn btn-sm btn-success btn-clear">Clear</a>
-        <input type="number" class="mr-3 num-lineups float-right" name="num-lineups" value="5" min="1" onKeyPress="if(this.value.length==3) return false;">
-        <span class="float-right pt-1 mr-2">Number of Lineups:</span>
+        <button class="btn btn-sm btn-success btn-export mt-1">Export</button>
+        <a class="btn btn-sm btn-success btn-calc mt-1">Calculate</a>
+        <a class="btn btn-sm btn-success btn-clear mt-1">Clear</a>
+        <input type="number" class="mr-3 num-lineups float-right mt-1" name="num-lineups" value="5" min="1" onKeyPress="if(this.value.length==3) return false;">
+        <span class="float-right pt-1 mr-2 mt-1">Number of Lineups:</span>
       </div>
     </div>
   </form>
