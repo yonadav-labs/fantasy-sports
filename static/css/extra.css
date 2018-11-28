@@ -260,6 +260,12 @@ table th {
     color: white !important;
 }
 
+@media (min-width: 568px) {
+    .c0cec43 {
+        display: inline;
+    }
+}
+
 @media (min-width: 450px) {
     .btn-calc {
         width: 100px; 
