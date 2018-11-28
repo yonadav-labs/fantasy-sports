@@ -267,7 +267,7 @@ table th {
 }
 
 @media (max-width: 425px) {
-    .table-responsive-sm {
+    .table-responsive-xs {
         display: block;
         width: 100%;
         overflow-x: auto;
