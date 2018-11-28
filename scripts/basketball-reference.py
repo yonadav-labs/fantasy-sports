@@ -1,12 +1,9 @@
+import os
+import django
 import urllib2
 
 from bs4 import BeautifulSoup
-
-import os
 from os import sys, path
-import django
-import pdb
-
 from datetime import datetime
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
@@ -38,13 +35,12 @@ def nameSync(name):
 
 def main():
     dp = "https://www.basketball-reference.com/friv/dailyleaders.fcgi"
-    dp = 'https://www.basketball-reference.com/friv/dailyleaders.fcgi?month=11&day=4&year=2018&type=all'
+
     response = urllib2.urlopen(dp)
     r = response.read()
 
     is_new = False # True
     soup = BeautifulSoup(r, "html.parser")
-    # pdb.set_trace()
 
     try:
         date = soup.find("span", {"class": "button2 current"}).text
