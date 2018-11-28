@@ -266,6 +266,16 @@ table th {
     }
 }
 
+@media (max-width: 425px) {
+    .table-responsive-sm {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }    
+}
+
 @media (min-width: 450px) {
     .btn-calc {
         width: 100px; 
