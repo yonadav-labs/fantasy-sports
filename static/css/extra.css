@@ -247,17 +247,31 @@ table th {
 }
 
 .btn-calc {
-    width: 100px; 
+    width: 85px; 
     color: white !important;
 }
 
 .btn-export {
-    width: 95px;
+    width: 80px;
 }
 
 .btn-clear {
-    width: 90px; 
+    width: 75px; 
     color: white !important;
+}
+
+@media (min-width: 450px) {
+    .btn-calc {
+        width: 100px; 
+    }
+
+    .btn-export {
+        width: 95px;
+    }
+
+    .btn-clear {
+        width: 90px; 
+    }
 }
 
 .num-lineups {

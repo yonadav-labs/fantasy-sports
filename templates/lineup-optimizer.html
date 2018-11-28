@@ -59,12 +59,18 @@
       </div>
 
       <div class="col-md-5 pl-md-2" id="div-result"></div>
-      <div class="pl-4 col-md-10 mb-5">
-        <button class="btn btn-sm btn-success btn-export mt-1">Export</button>
-        <a class="btn btn-sm btn-success btn-calc mt-1">Calculate</a>
-        <a class="btn btn-sm btn-success btn-clear mt-1">Clear</a>
-        <input type="number" class="mr-3 num-lineups float-right mt-1" name="num-lineups" value="5" min="1" onKeyPress="if(this.value.length==3) return false;">
-        <span class="float-right pt-1 mr-2 mt-1">Number of Lineups:</span>
+      <div class="pl-4 col-md-12 col-lg-10 mb-5 mt-1">
+        <div class="row">
+          <div class="col-md-7 pl-2">
+            <button class="btn btn-sm btn-success btn-export mt-1">Export</button>
+            <a class="btn btn-sm btn-success btn-calc mt-1">Calculate</a>
+            <a class="btn btn-sm btn-success btn-clear mt-1">Clear</a>
+          </div>
+          <div class="col-md-5 p-0">
+            <input type="number" class="mr-3 num-lineups float-right mt-1" name="num-lineups" value="5" min="1" onKeyPress="if(this.value.length==3) return false;">
+            <span class="float-right pt-1 mr-2 mt-1">Number of Lineups:</span>
+          </div>          
+        </div>
       </div>
     </div>
   </form>
