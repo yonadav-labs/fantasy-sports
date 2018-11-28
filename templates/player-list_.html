@@ -1,5 +1,5 @@
 {% load extra %}
-<table class="table table-hover table-responsive-sm g043949jfg34f">
+<table class="table table-hover table-responsive-sm">
   <thead>
     <tr>
       <th><input type="checkbox" id="chk-all" checked="" onclick="choose_all(this)"></th>
@@ -19,7 +19,7 @@
         <td>
           <a href="#/players/{{ ii.id }}">
             <div>
-              <span>{{ ii.first_name }} {{ ii.last_name }}<span>
+              <span>{{ ii.first_name }} {{ ii.last_name }}</span>
               {% if ii.injury %}
                 <span class="text-danger font-weight-bold ml-3">{{ ii.injury }}</span>
               {% endif %}
