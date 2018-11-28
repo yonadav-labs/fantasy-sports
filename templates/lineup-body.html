@@ -14,7 +14,7 @@
       <tbody>
         {% for ii in players %}
           <tr>
-            <td><i class="fas fa-times-circle pr-2 pt-2" onclick="build_lineup(-{{ ii.player.id }});"></i>{{ ii.pos }}</td>
+            <td><i class="fas fa-times-circle pr-2" onclick="build_lineup(-{{ ii.player.id }});"></i>{{ ii.pos }}</td>
             <td colspan="3">
               <a href="/players/{{ ii.player.id }}">
                 <div class="float-left">

@@ -155,6 +155,7 @@ div.lineups {
 #div-result th, 
 #div-players td input {
     font-size: 0.81rem !important;
+    vertical-align: middle;
 }
 
 table td {
@@ -444,4 +445,5 @@ input[type="search"]::-webkit-search-cancel-button {
 
 .j89g893t34 td {
     padding: .44rem .6rem !important;
+    vertical-align: middle;
 }

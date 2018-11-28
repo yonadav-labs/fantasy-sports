@@ -20,7 +20,9 @@
           <a href="#/players/{{ ii.id }}">
             <div>
               <span>{{ ii.first_name }} {{ ii.last_name }}<span>
-              <span class="text-danger font-weight-bold ml-3">{{ ii.injury }}</span>
+              {% if ii.injury %}
+                <span class="text-danger font-weight-bold ml-3">{{ ii.injury }}</span>
+              {% endif %}
             </div>
             <div class="sub">{{ ii.team }} {{ ii.opponent1 }}</div>
           </a>
