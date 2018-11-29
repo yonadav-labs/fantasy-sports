@@ -12,7 +12,14 @@ html {
 { @media {
     .table-responsive-sm {
         width: calc(100vw - 90px) !important;
-    }    
+    }
+}}
+
+@media screen and (min-color-index:0) and (-webkit-min-device-pixel-ratio:0) and (max-width: 400px)
+{ @media {
+    .table-responsive-xs {
+        width: calc(100vw - 90px) !important;
+    }
 }}
 
 .a98ef3r3e {
