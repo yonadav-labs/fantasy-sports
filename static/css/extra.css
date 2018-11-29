@@ -8,17 +8,6 @@ html {
     }
 }
 
-.a34233d3r1 {
-    position: fixed;
-    top: 0;
-    right:0;
-    bottom:0;
-    left: 0;
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
-    /*box-sizing: border-box;    */
-}
-
 .a98ef3r3e {
     min-height: 30px;
     display: flex;
@@ -150,7 +139,7 @@ div.lineups {
     overflow-y: scroll; 
     height: 40vw;
     min-height: 360px;
-    -webkit-overflow-scrolling: touch;
+    /*-webkit-overflow-scrolling: touch;*/
 }
 
 @media (min-width: 1600px) {
