@@ -35,6 +35,7 @@ $(function() {
     }
 
     $('#div-result').html('<div class="font-weight-bold text-center" style="margin-top: 64px; min-height: 108px;">Calculating ...</div>');
+    alert($('#frm-player').serialize());
     $.post( "/gen-lineups", $('#frm-player').serialize(), function( data ) {
       $("#div-result").html(data.player_stat);
       $('#dlg-preview .modal-body').html(data.preview_lineups);
