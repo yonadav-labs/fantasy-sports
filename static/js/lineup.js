@@ -8,7 +8,7 @@ $(function() {
   $('.nav-tabs.ds .nav-link').click(function () {
     ds = $(this).text();
     $('#ds').val(ds);
-    // getPlayers();
+    getPlayers();
   });
 
   $('.nav-tabs.ds .nav-link:first').click();
