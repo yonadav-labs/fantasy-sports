@@ -243,6 +243,7 @@ def get_num_lineups(player, lineups):
     return num
 
 
+@csrf_exempt
 def gen_lineups(request):
     lineups, players = _get_lineups(request)
     avg_points = mean([ii.projected() for ii in lineups])
