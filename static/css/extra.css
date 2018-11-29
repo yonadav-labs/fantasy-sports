@@ -8,6 +8,18 @@ html {
     }
 }
 
+.a34233d3r {
+    position: fixed;
+    top: 0;
+    right:0;
+    bottom:0;
+    left: 0;
+    padding: 50px;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;    
+}
+
 .a98ef3r3e {
     min-height: 30px;
     display: flex;
