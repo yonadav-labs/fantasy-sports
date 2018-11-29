@@ -8,6 +8,15 @@ html {
     }
 }
 
+@media screen and (min-color-index:0) and(-webkit-min-device-pixel-ratio:0)
+{ @media {
+    @media (max-width: 575.98px) {
+        .table-responsive-sm {
+            width: calc(100vw - 90px);
+        }    
+    }
+}}
+
 .a98ef3r3e {
     min-height: 30px;
     display: flex;
