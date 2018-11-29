@@ -10,7 +10,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for ii in players %}
+    {% for ii in players1 %}
       <tr>
         <td><input type="checkbox" name="ids" {% if not ii.injury %} checked="" {% endif %} value="{{ ii.id }}"></td>
         <td style="cursor: pointer;" onclick="pr_click(this)">
