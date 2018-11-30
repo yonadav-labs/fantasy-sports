@@ -9,6 +9,9 @@ $(function() {
     ds = $(this).text();
     $('#ds').val(ds);
     getPlayers();
+    // remove locked and clear search
+    $('input[name=locked]').remove();
+    $("#search-player").val('');
   });
 
   $('.nav-tabs.ds .nav-link:first').click();

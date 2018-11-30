@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container-iframe pt-3 mt-3 mb-3 lineups-container">
-  <form id="frm-player" action="/export_lineups" method="POST">
+  <form id="frm-player" action="/export_lineups" method="POST" onkeypress="return event.keyCode != 13;">
     {% csrf_token %}
     <div class="row">
       <div class="col-md-12 mb-3">

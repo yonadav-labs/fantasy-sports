@@ -111,6 +111,17 @@ ROSTER_SIZE = {
     'Yahoo': 8,
 }
 
+TEAM_LIMIT = {
+    'FanDuel': 3,
+    'Yahoo': 3,
+    'DraftKings': 2
+}
+
+TEAM_MEMEBER_LIMIT = {
+    'FanDuel': 4,
+    'Yahoo': 6,
+    'DraftKings': 8
+}
 
 def get_lineup(ds, players, teams, locked, max_point, con_mul):
     solver = pywraplp.Solver('nba-lineup', pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
@@ -145,14 +156,15 @@ def get_lineup(ds, players, teams, locked, max_point, con_mul):
             if player.position in position:
                 position_cap.SetCoefficient(variables[i], 1)
 
-    # at most 4 players from one team (yahoo)
-    if ds == 'Yahoo':
+    # no more than n players from one team (yahoo, fanduel)
+    if TEAM_MEMEBER_LIMIT[ds] != ROSTER_SIZE[ds]:
         for team in teams:
-            team_cap = solver.Constraint(0, 6)
+            team_cap = solver.Constraint(0, TEAM_MEMEBER_LIMIT[ds])
             for i, player in enumerate(players):
                 if team == player.team:
                     team_cap.SetCoefficient(variables[i], 1)
-    elif ds == 'DraftKings':    # multi positional constraints
+
+    if ds == 'DraftKings':    # multi positional constraints
         for ii in con_mul:
             if players[ii[0]].id in locked:
                 mul_pos_cap = solver.Constraint(1, 1)
@@ -190,19 +202,15 @@ def calc_lineups(players, num_lineups, locked=[], ds='FanDuel'):
         players_ = []
         idx = 0
         for ii in players:
-            if len(ii.actual_position.split('/')) > 1:
-                p = vars(ii)
-                p.pop('_state')
-                ci_ = []
-                for jj in ii.actual_position.split('/'):
-                    ci_.append(idx)
-                    p['position'] = jj
-                    players_.append(Player(**p))
-                    idx += 1
-                con_mul.append(ci_)
-            else:
-                players_.append(ii)
+            p = vars(ii)
+            p.pop('_state')
+            ci_ = []
+            for jj in ii.actual_position.split('/'):
+                ci_.append(idx)
+                p['position'] = jj
+                players_.append(Player(**p))
                 idx += 1
+            con_mul.append(ci_)
         players = players_
 
     while True:
@@ -213,7 +221,7 @@ def calc_lineups(players, num_lineups, locked=[], ds='FanDuel'):
             break
         max_point = roster.projected() - 0.001
         
-        if roster.get_num_teams() > 2 or ds != 'Yahoo': # min number of teams - 3 (Yahoo)
+        if roster.get_num_teams() >= TEAM_LIMIT[ds]:
             result.append(roster)
             if len(result) == num_lineups:
                 break
