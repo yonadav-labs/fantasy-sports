@@ -53,8 +53,10 @@ def lineup_optimizer(request):
 def build_lineup(request):
     ds = request.POST.get('ds')
     pid = request.POST.get('pid')
+    idx = request.POST.get('idx')
     request.session['ds'] = ds
 
+    num_lineups = request.session.get('num_lineups', 1)
     lineup = request.session.get(ds+'_lineup', [{ 'pos':ii, 'player': '' } for ii in CSV_FIELDS[ds]])
 
     msg = ''
@@ -151,16 +153,6 @@ def current_season():
     return today.year if today > datetime.date(today.year, 10, 17) else today.year - 1
 
 
-def player_detail(request, pid):
-    player = Player.objects.get(id=pid)
-    year = current_season()
-    games = get_games_(pid, 'all', '', year)
-    avg_min = games.aggregate(Avg('mp'))
-    avg_fpts = games.aggregate(Avg('fpts'))
-
-    return render(request, 'player_detail.html', locals())
-
-
 def formated_diff(val):
     fm = '{:.1f}' if val > 0 else '({:.1f})'
     return fm.format(abs(val))
@@ -190,28 +182,6 @@ def get_player(full_name, team):
     if not player:
         player = players.first()
     return player
-
-
-@csrf_exempt
-def player_games(request):
-    pid = request.POST.get('pid')
-    loc = request.POST.get('loc')
-    opp = request.POST.get('opp')
-    season = int(request.POST.get('season'))
-
-    games = get_games_(pid, loc, opp, season)
-
-    opps = '<option value="">All</option>'
-    for ii in sorted(set(games.values_list('opp', flat=True).distinct())):
-        opps += '<option>{}</option>'.format(ii)
-
-    result = {
-        'game_table': render_to_string('game-list_.html', locals()),
-        'chart': [[ii.date.strftime('%Y/%m/%d'), ii.fpts] for ii in games],
-        'opps': opps
-    }
-
-    return JsonResponse(result, safe=False)
 
 
 def mean(numbers):
@@ -305,10 +275,3 @@ def export_manual_lineup(request):
     response['Content-Length'] = os.path.getsize( path )
     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str( os.path.basename( path ) )
     return response
-
-@csrf_exempt
-def update_point(request):
-    pid = int(request.POST.get('pid'))
-    points = request.POST.get('val')
-    Player.objects.filter(id=pid).update(proj_points=points)
-    return HttpResponse('')
