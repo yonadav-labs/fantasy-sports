@@ -1,10 +1,12 @@
 var ds = 'DraftKings';
 
 $(function() {
+  // when change slate
   $('.slate input').on('change', function() {   // game slates checkbox
     getPlayers();
   });
 
+  // change tab
   $('.nav-tabs.ds .nav-link').click(function () {
     ds = $(this).text();
     $('#ds').val(ds);
@@ -135,7 +137,7 @@ function getPlayers () {
       if ($('#div-result').length > 0) {  // optimizer
         $('#div-result').html('');
       } else {
-        build_lineup(null);
+        // build_lineup(null);
       }
     }
   );

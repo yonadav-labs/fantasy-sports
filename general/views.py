@@ -26,9 +26,6 @@ CSV_FIELDS = {
     'Yahoo': ['PG', 'SG', 'G', 'SF', 'PF', 'F', 'C', 'UTIL']
 }
 
-def iframe_test(request):
-    return render(request, 'iframe-test.html')
-
 
 def _get_game_today(ds='FanDuel'):
     return Game.objects.filter(data_source=ds)
@@ -62,15 +59,15 @@ def build_lineup(request):
 
     msg = ''
 
-    if pid == "123456789":  # remove all players
+    if pid == "123456789":          # remove all players
         lineup = [{ 'pos':ii, 'player': '' } for ii in CSV_FIELDS[ds]]
         request.session[ds+'_lineup'] = lineup
-    elif '-' in pid:        # remove a player
+    elif '-' in pid:                # remove a player
         pid = pid.strip('-')
         for ii in lineup:
             if ii['player'] == pid:
                 ii['player'] = ''
-    elif pid:               # add a player
+    elif pid:                       # add a player
         # check whether he is available
         sum_salary = 0
         available = False
