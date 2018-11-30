@@ -478,7 +478,7 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 .j89g893t34 {
-    margin-top: 38px;
+    /*margin-top: 38px;*/
     border: 1px solid #eee;
     border-radius: 4px;
     background: white;
@@ -492,4 +492,12 @@ input[type="search"]::-webkit-search-cancel-button {
 .j89g893t34 td {
     padding: .44rem .6rem !important;
     vertical-align: middle;
+}
+
+#div-lineup {
+    padding-top: 40px; 
+}
+
+#accordion .card-header {
+    padding: 0.35rem 1.25rem;
 }

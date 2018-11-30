@@ -1,4 +1,5 @@
-var ds = 'DraftKings';
+var ds = 'DraftKings',
+    bid = '';
 
 $(function() {
   // when change slate
@@ -81,20 +82,34 @@ $(function() {
     $('.position-filter .nav-item a').removeClass('active');
     $(this).toggleClass('active');
     filterTable();
-  })
+  });
+
+  // add default lineups
+  for (i = 0; i < num_lineups; i++) {
+    add_lineup_(i+1);
+  }
 })
+
+$("body").on('shown.bs.collapse', ".collapse", function() {
+  bid = $(this).attr("id");
+  build_lineup(null);
+});
+
+$("body").on('hidden.bs.collapse', ".collapse", function() {
+  $(this).html("");
+});
 
 function build_lineup(pid) {
   $.post( "/build-lineup", {
     pid: pid,
-    ds: ds
+    ds: ds,
+    idx: bid.replace('collapse_', '')
   }, function( data ) {
-    $("#div-lineup").html(data.html);
+    $("#"+bid).html(data.html);
     $('.fas.lock').removeClass('fa-lock');
     $('.fas.lock').addClass('fa-lock-open');
 
     for (ii in data.pids) {
-      console.log(`.plb-${data.pids[ii]}`);
       $(`.plb-${data.pids[ii]}`).toggleClass('fa-lock-open');
       $(`.plb-${data.pids[ii]}`).toggleClass('fa-lock');
     }
@@ -103,6 +118,25 @@ function build_lineup(pid) {
       alert(data.msg);
     }
   });
+}
+
+function add_lineup_(n) {
+  nl_content = '<div class="card"> \
+                  <div class="card-header"> \
+                    <a class="card-link" href="#" onclick="$(\'#collapse_@@@\').collapse(\'show\')"> \
+                      Lineup @@@ \
+                    </a> \
+                  </div> \
+                  <div id="collapse_@@@" class="collapse" data-parent="#accordion"></div> \
+                </div>';
+
+  $('#accordion').append(nl_content.replace(/@@@/g, n));
+}
+
+function add_lineup() {
+  num_lineups += 1;
+  add_lineup_(num_lineups);
+  $('#collapse_'+num_lineups).collapse('show');
 }
 
 function pr_click(obj) {
@@ -137,7 +171,7 @@ function getPlayers () {
       if ($('#div-result').length > 0) {  // optimizer
         $('#div-result').html('');
       } else {
-        // build_lineup(null);
+        $("#collapse_1").collapse('show');
       }
     }
   );

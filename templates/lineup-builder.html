@@ -59,44 +59,12 @@
       </div>
 
       <div class="col-md-5 pl-md-2" id="div-lineup">
-        <div id="accordion">
-            <div class="card">
-              <div class="card-header">
-                <a class="card-link" data-toggle="collapse" href="#collapseOne">
-                  Collapsible Group Item #1
-                </a>
-              </div>
-              <div id="collapseOne" class="collapse show" data-parent="#accordion">
-                <div class="card-body">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header">
-                <a class="collapsed card-link" data-toggle="collapse" href="#collapseTwo">
-                Collapsible Group Item #2
-              </a>
-              </div>
-              <div id="collapseTwo" class="collapse" data-parent="#accordion">
-                <div class="card-body">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header">
-                <a class="collapsed card-link" data-toggle="collapse" href="#collapseThree">
-                  Collapsible Group Item #3
-                </a>
-              </div>
-              <div id="collapseThree" class="collapse" data-parent="#accordion">
-                <div class="card-body">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </div>
-              </div>
-            </div>
-          </div>
+        <div id="accordion"></div>
+        <div class="mb-3 mt-2">
+          <a class="btn btn-sm btn-success" style="color: white;" onclick="build_lineup(123456789);">Clear</a>
+          <a class="btn btn-sm btn-success" style="color: white;" onclick="add_lineup();">New Lineup</a>
+          <button class="btn btn-sm btn-success" onclick="export_lineup(event);">Export</button>
+        </div>
       </div>
     </div>
   </form>
@@ -104,5 +72,8 @@
 {% endblock %}
 
 {% block script %}
+  <script type="text/javascript">
+    var num_lineups = 2;
+  </script>
   <script src="/static/js/lineup.js"></script>
 {% endblock %}
