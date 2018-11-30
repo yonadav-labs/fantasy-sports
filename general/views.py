@@ -49,6 +49,20 @@ def lineup_optimizer(request):
     games = _get_game_today()
     return render(request, 'lineup-optimizer.html', locals())
 
+def _is_full_lineup(lineup, ds):
+    num_players = sum([1 for ii in lineup if ii['player']])
+    return num_players == ROSTER_SIZE[ds]
+
+@csrf_exempt
+def check_mlineups(request):
+    ds = request.POST.get('ds')
+    num_lineups = request.session.get(ds+'_num_lineups', 1)
+    res = []
+    for ii in range(1, num_lineups+1):
+        key = '{}_lineup_{}'.format(ds, ii)
+        lineup = request.session.get(key)
+        res.append([ii, 'checked' if _is_full_lineup(lineup, ds) else 'disabled'])
+    return JsonResponse(res, safe=False)
 
 @csrf_exempt
 def build_lineup(request):
@@ -132,7 +146,6 @@ def build_lineup(request):
     }
 
     return JsonResponse(result, safe=False)
-
 
 @csrf_exempt
 def get_players(request):
@@ -276,15 +289,18 @@ def export_lineups(request):
 
 def export_manual_lineup(request):
     ds = request.session.get('ds')
-    lineup = request.session.get(ds+'_lineup')
-    csv_fields = [ii['pos'] for ii in lineup]
-    players = [Player.objects.get(id=ii['player']) for ii in lineup]
+    lidx = request.GET.getlist('lidx')
     path = "/tmp/.fantasy_nba_{}.csv".format(ds.lower())
+    csv_fields = CSV_FIELDS[ds]
 
     with open(path, 'w') as f:
         f.write(','.join(csv_fields)+'\n')
-        f.write(','.join(['{} {}'.format(ii.first_name, ii.last_name) for ii in players]))
-    
+        for idx in lidx:
+            key = '{}_lineup_{}'.format(ds, idx)
+            lineup = request.session.get(key)
+            players = [Player.objects.get(id=ii['player']) for ii in lineup]
+            f.write(','.join(['{} {}'.format(ii.first_name, ii.last_name) for ii in players])+'\n')
+        
     wrapper = FileWrapper( open( path, "r" ) )
     content_type = mimetypes.guess_type( path )[0]
 

@@ -27,7 +27,8 @@ urlpatterns = [
     url(r'^lineup-builder$', lineup_builder, name="lineup_builder"),
     url(r'^build-lineup$', build_lineup, name="build_lineup"),
     url(r'^gen-lineups', gen_lineups, name="gen_lineups"),
+    url(r'^check-mlineups', check_mlineups, name="check_mlineups"),
     url(r'^export_lineups', export_lineups, name="export_lineups"),
-    url(r'^export-manual-lineup', export_manual_lineup, name="export_manual_lineup"),
+    url(r'^export-mlineup', export_manual_lineup, name="export_manual_lineup"),
     url(r'^get-players', get_players, name="get_players"),
 ]

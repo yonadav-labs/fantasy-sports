@@ -215,6 +215,23 @@ function toggleLock(obj, pid) {
 
 function export_lineup(e) {
   e.preventDefault();
-  location.href = '/export-manual-lineup'; 
+  $.post( "/check-mlineups", 
+    { 
+      ds: ds,
+    }, 
+    function( data ) {
+      $('#dlg-export .modal-body').html('');
+      for (ii in data) {
+        cb_content = '<div class="form-check @@@"> \
+                        <label class="form-check-label"> \
+                          <input type="checkbox" name="lidx" class="form-check-input" value="IDX" @@@>Lineup IDX \
+                        </label> \
+                      </div>';
+        $('#dlg-export .modal-body').append(cb_content.replace(/IDX/g, data[ii][0]).replace(/@@@/g, data[ii][1]));
+      }
+      $('#dlg-export').modal();
+    }
+  );
+
   return false;
 }

@@ -68,7 +68,26 @@
       </div>
     </div>
   </form>
-</div>  
+
+  <div class="modal fade" id="dlg-export">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="frm-mline" action="/export-mlineup" method="GET">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h4 class="modal-title">Exporting Lineups</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body pl-4"></div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-sm btn-success" onclick="$('#frm-mline').submit();" data-dismiss="modal">Export</button>
+            <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block script %}
