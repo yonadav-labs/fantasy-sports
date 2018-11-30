@@ -39,6 +39,7 @@ def players(request):
 @xframe_options_exempt
 def lineup_builder(request):
     data_sources = DATA_SOURCE
+    num_lineups = request.session.get('DraftKings_num_lineups', 1)
     games = _get_game_today()
     return render(request, 'lineup-builder.html', locals())
 
@@ -53,17 +54,27 @@ def lineup_optimizer(request):
 def build_lineup(request):
     ds = request.POST.get('ds')
     pid = request.POST.get('pid')
-    idx = request.POST.get('idx')
-    request.session['ds'] = ds
+    idx = int(request.POST.get('idx'))
 
-    num_lineups = request.session.get('num_lineups', 1)
-    lineup = request.session.get(ds+'_lineup', [{ 'pos':ii, 'player': '' } for ii in CSV_FIELDS[ds]])
+    request.session['ds'] = ds
+    key = '{}_lineup_{}'.format(ds, idx)
+    num_lineups = request.session.get(ds+'_num_lineups', 1)
+    lineup = request.session.get(key, [{ 'pos':ii, 'player': '' } for ii in CSV_FIELDS[ds]])
+
+    if idx > num_lineups:           # add lineup
+        num_lineups = idx
+        request.session[ds+'_num_lineups'] = idx
+        request.session[key] = lineup
 
     msg = ''
 
-    if pid == "123456789":          # remove all players
+    if pid == "123456789":          # remove all lineups
+        request.session[ds+'_num_lineups'] = 1
         lineup = [{ 'pos':ii, 'player': '' } for ii in CSV_FIELDS[ds]]
-        request.session[ds+'_lineup'] = lineup
+        request.session['{}_lineup_{}'.format(ds, 1)] = lineup
+
+        for ii in range(2, num_lineups+1):
+            request.session.pop('{}_lineup_{}'.format(ds, ii))
     elif '-' in pid:                # remove a player
         pid = pid.strip('-')
         for ii in lineup:
@@ -88,7 +99,7 @@ def build_lineup(request):
                         break
             if available:
                 # save lineup
-                request.session[ds+'_lineup'] = lineup
+                request.session[key] = lineup
             else:
                 msg = 'He is not applicable to any position.'
         else:
@@ -131,7 +142,13 @@ def get_players(request):
                                     team__in=teams,
                                     play_today=True) \
                             .order_by('-proj_points')
-    return HttpResponse(render_to_string('player-list_.html', locals()))
+
+    result = { 
+        'html': render_to_string('player-list_.html', locals()),
+        'num_lineups': request.session.get(ds+'_num_lineups', 1),
+    }
+
+    return JsonResponse(result, safe=False)
 
 
 def get_games_(pid, loc, opp, season):
