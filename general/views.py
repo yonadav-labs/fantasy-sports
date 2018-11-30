@@ -6,7 +6,7 @@ import mimetypes
 import datetime
 from wsgiref.util import FileWrapper
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from django.utils.encoding import smart_str
@@ -308,3 +308,6 @@ def export_manual_lineup(request):
     response['Content-Length'] = os.path.getsize( path )
     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str( os.path.basename( path ) )
     return response
+
+def go_dfs(request):
+    return redirect('https://www.greenlightdfs.com')
