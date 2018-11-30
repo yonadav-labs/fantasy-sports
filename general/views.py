@@ -6,7 +6,7 @@ import mimetypes
 import datetime
 from wsgiref.util import FileWrapper
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from django.utils.encoding import smart_str
@@ -310,4 +310,4 @@ def export_manual_lineup(request):
     return response
 
 def go_dfs(request):
-    return redirect('https://www.greenlightdfs.com')
+    return render(request, 'go-dfs.html')
