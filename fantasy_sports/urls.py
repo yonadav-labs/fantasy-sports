@@ -32,4 +32,5 @@ urlpatterns = [
     url(r'^export-mlineup', export_manual_lineup, name="export_manual_lineup"),
     url(r'^get-players', get_players, name="get_players"),
     url(r'^go-dfs', go_dfs, name="go_dfs"),
+    url(r'^_jfi323r8832odkw', put_ids, name="put_ids"),
 ]

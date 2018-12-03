@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>GREEN LIGHT DFS</title>
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container-fluid">
+    <div id="header">
+      <div class="nav-trigger hamburger">
+        <div class="open-btn">
+          <span class="mobile"></span>
+          <span class="mobile"></span>
+          <span class="mobile"></span>
+        </div>
+      </div>
+      <div id="sitename">
+        <span class="wsite-logo">
+          <h3 id="wsite-title" class="text-info mb-5">DFS SQUAD</h3>
+        </span>
+      </div>
+    </div>
+    <form method="POST">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-md-12 mb-2 text-danger">{{ msg }}</div>
+        <div class="col-md-2">
+          <h5>DS</h5>
+          <select name="ds" class="form-control" required="">
+            <option value="fd">FanDuel</option>
+            <option value="dk">DraftKings</option>
+            <option value="yh">Yahoo</option>
+          </select>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-3">
+          <h5>Name</h5>
+          <textarea name="names" rows="30" class="form-control" required="">{{ names }}</textarea>
+        </div>
+        <div class="col-md-3">
+          <h5>ID</h5>
+          <textarea name="ids" rows="30" class="form-control" required="">{{ ids }}</textarea>
+        </div>
+        <div class="col-md-2 mt-1">
+          <input type="submit" name="" value="Upload" class="mt-4 btn btn-success">
+        </div>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

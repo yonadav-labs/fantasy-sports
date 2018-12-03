@@ -309,5 +309,27 @@ def export_manual_lineup(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str( os.path.basename( path ) )
     return response
 
+def put_ids(request):
+    msg = ''
+    if request.method == 'GET':
+        pass
+    else:
+        ds = request.POST.get('ds')
+        ids = request.POST.get('ids').strip()
+        ids_ = ids.split('\r\n')
+        names = request.POST.get('names').strip()
+        names_ = names.split('\r\n')
+
+        for idx, name in enumerate(names_):
+            nns = name.split()
+            if len(nns) > 1:
+                d = { ds+'_id': ids_[idx] }
+                res = Player.objects.filter(first_name=nns[0], last_name=nns[1]).update(**d)
+                if not res:
+                    msg += ids_[idx]+', '
+            else:
+                msg += ids_[idx]+', '
+    return render(request, 'put-ids.html', locals())
+
 def go_dfs(request):
     return render(request, 'go-dfs.html')
