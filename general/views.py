@@ -322,13 +322,13 @@ def put_ids(request):
         failed = ''
         for idx, name in enumerate(names_):
             nns = name.split()
-            if len(nns) > 1:
+            flag = Player.objects.filter(data_source=ds, rid=ids_[idx]).exists()
+            if len(nns) > 1 and not flag:
                 d = { 'rid': ids_[idx] }
-                res = Player.objects.filter(first_name=nns[0], last_name=nns[1], data_source=ds).update(**d)
-                if not res:
-                    failed += '{} ( {} ) - Not Matching\n'.format(ids_[idx], name)
-            else:
-                failed += '{} ( {} ) - Name\n'.format(ids_[idx], name)
+                flag = Player.objects.filter(first_name=nns[0], last_name=nns[1], data_source=ds).update(**d)
+
+            if not flag:
+                failed += '{} ( {} ) - Not Matching\n'.format(ids_[idx], name)
         result = '{} / {}'.format(len(failed.split('\n')), len(ids_))
 
     return render(request, 'put-ids.html', locals())
