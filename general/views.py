@@ -326,9 +326,9 @@ def put_ids(request):
                 d = { ds+'_id': ids_[idx] }
                 res = Player.objects.filter(first_name=nns[0], last_name=nns[1]).update(**d)
                 if not res:
-                    msg += ids_[idx]+', '
+                    msg += '{} ( {} ), '.format(ids_[idx], name)
             else:
-                msg += ids_[idx]+', '
+                msg += '{} ( {} ), '.format(ids_[idx], name)
     return render(request, 'put-ids.html', locals())
 
 def go_dfs(request):
