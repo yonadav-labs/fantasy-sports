@@ -39,10 +39,8 @@ class Player(models.Model):
     value = models.FloatField()
     play_today = models.BooleanField(default=False)
     
-    fd_id = models.CharField(max_length=30, null=True, blank=True)
-    dk_id = models.CharField(max_length=30, null=True, blank=True)
-    yh_id = models.CharField(max_length=30, null=True, blank=True)
 
+    rid = models.CharField(max_length=30, null=True, blank=True)
     data_source = models.CharField(max_length=30, choices=DATA_SOURCE, default='FanDuel')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

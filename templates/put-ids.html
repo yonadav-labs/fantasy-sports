@@ -35,9 +35,9 @@
         <div class="col-md-1 mt-1 text-center">
           <h5>DS</h5>
           <select name="ds" class="form-control mb-5" required="">
-            <option value="fd">FanDuel</option>
-            <option value="dk">DraftKings</option>
-            <option value="yh">Yahoo</option>
+            <option {% if ds == 'FanDuel' %} selected {% endif %}>FanDuel</option>
+            <option {% if ds == 'DraftKings' %} selected {% endif %}>DraftKings</option>
+            <option {% if ds == 'Yahoo' %} selected {% endif %}>Yahoo</option>
           </select>
           <input type="submit" name="" value="Upload" class="mt-4 btn btn-success">
         </div>

@@ -311,7 +311,7 @@ def export_manual_lineup(request):
 
 def put_ids(request):
     if request.method == 'GET':
-        pass
+        result = '-'
     else:
         ds = request.POST.get('ds')
         ids = request.POST.get('ids').strip()
@@ -323,8 +323,8 @@ def put_ids(request):
         for idx, name in enumerate(names_):
             nns = name.split()
             if len(nns) > 1:
-                d = { ds+'_id': ids_[idx] }
-                res = Player.objects.filter(first_name=nns[0], last_name=nns[1]).update(**d)
+                d = { 'rid': ids_[idx] }
+                res = Player.objects.filter(first_name=nns[0], last_name=nns[1], data_source=ds).update(**d)
                 if not res:
                     failed += '{} ( {} ) - Not Matching\n'.format(ids_[idx], name)
             else:
