@@ -310,7 +310,6 @@ def export_manual_lineup(request):
     return response
 
 def put_ids(request):
-    msg = ''
     if request.method == 'GET':
         pass
     else:
@@ -320,15 +319,18 @@ def put_ids(request):
         names = request.POST.get('names').strip()
         names_ = names.split('\r\n')
 
+        failed = ''
         for idx, name in enumerate(names_):
             nns = name.split()
             if len(nns) > 1:
                 d = { ds+'_id': ids_[idx] }
                 res = Player.objects.filter(first_name=nns[0], last_name=nns[1]).update(**d)
                 if not res:
-                    msg += '{} ( {} ), '.format(ids_[idx], name)
+                    failed += '{} ( {} ) - Not Matching\n'.format(ids_[idx], name)
             else:
-                msg += '{} ( {} ), '.format(ids_[idx], name)
+                failed += '{} ( {} ) - Name\n'.format(ids_[idx], name)
+        result = '{} / {}'.format(len(failed.split('\n')), len(ids_))
+
     return render(request, 'put-ids.html', locals())
 
 def go_dfs(request):
