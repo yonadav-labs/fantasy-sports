@@ -184,6 +184,8 @@ function getPlayers (order) {
     }, 
     function( data ) {
       $( "#div-players" ).html( data.html );
+      filterTable();  // reapply position filter
+
       var is_optimizer = $('#div-result').length > 0;
 
       if (!order) {
