@@ -9,14 +9,6 @@ DATA_SOURCE = (
     ('Yahoo', 'Yahoo'),
 )
 
-def parse_name(name):
-    # get first and last name from name string after processing
-    name = name.strip().replace('.', '')
-    name_ = name.split(' ')
-    if len(name_) > 1:
-        return name_[0], ' '.join(name_[1:])
-    return name, ''
-
 POSITION = (
     ('PG', 'PG'), 
     ('SG', 'SG'), 
@@ -57,6 +49,14 @@ TEAM = (
     ('IND', 'IND'),
     ('SAC', 'SAC')
 )
+
+def parse_name(name):
+    # get first and last name from name string after processing
+    name = name.strip().replace('.', '')
+    name_ = name.split(' ')
+    if len(name_) > 1:
+        return name_[0], ' '.join(name_[1:])
+    return name, ''
 
 class Player(models.Model):
     uid = models.IntegerField()

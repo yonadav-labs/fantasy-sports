@@ -19,6 +19,9 @@ from general.models import *
 from general.lineup import *
 from general.color import *
 
+from scripts.roto import get_players as roto_get_players
+from scripts.roto_games import get_games as roto_get_games
+
 CSV_FIELDS = {
     'FanDuel': ['PG', 'PG', 'SG', 'SG', 'SF', 'SF', 'PF', 'PF', 'C'],
     'DraftKings': ['PG', 'SG', 'SF', 'PF', 'C', 'G', 'F', 'UTIL'],
@@ -286,6 +289,7 @@ def export_lineups(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str( os.path.basename( path ) )
     return response
 
+
 def export_manual_lineup(request):
     ds = request.session.get('ds')
     lidx = request.GET.getlist('lidx')
@@ -308,8 +312,11 @@ def export_manual_lineup(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str( os.path.basename( path ) )
     return response
 
+
 @staff_member_required
 def put_ids(request):
+    last_updated = Player.objects.all().order_by('-updated_at').first().updated_at
+
     if request.method == 'GET':
         result = '-'
     else:
@@ -331,6 +338,18 @@ def put_ids(request):
         result = '{} / {}'.format(len(failed.split('\n')), len(ids_))
 
     return render(request, 'put-ids.html', locals())
+
+
+@staff_member_required
+@csrf_exempt
+def trigger_scraper(request):
+    Player.objects.all().update(play_today=False)
+    for ds in DATA_SOURCE:
+        roto_get_players(ds[0])
+        roto_get_games(ds[0])
+
+    return HttpResponse('Completed')
+
 
 def go_dfs(request):
     return render(request, 'go-dfs.html')

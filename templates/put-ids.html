@@ -21,15 +21,19 @@
           <h5>ID</h5>
           <textarea name="ids" rows="30" class="form-control" required="">{{ ids }}</textarea>
         </div>
-        <div class="col-md-1 mt-1 text-center">
-          <h5>For</h5>
-          <select name="ds" class="form-control mb-3" required="">
-            <option value="">Choose</option>
-            <option {% if ds == 'FanDuel' %} selected {% endif %}>FanDuel</option>
-            <option {% if ds == 'DraftKings' %} selected {% endif %}>DraftKings</option>
-          </select>
-          <input type="submit" name="" value="Upload" class="btn btn-success btn-sm mb-5">
-          <a class="btn btn-success btn-sm" href="#/scrape">Scrape Rotowire</a>
+        <div class="col-md-2 mt-1 text-center">
+          <div class="row my-5">
+            <div class="col-md-7">
+              <select name="ds" class="form-control" required="">
+                <option value="">Choose</option>
+                <option {% if ds == 'FanDuel' %} selected {% endif %}>FanDuel</option>
+                <option {% if ds == 'DraftKings' %} selected {% endif %}>DraftKings</option>
+              </select>
+            </div>
+            <div class="col-md-5"><input type="submit" name="" value="Upload" class="btn btn-success form-control"></div>
+          </div>
+          <a class="btn btn-success btn-sm trigger-scraper" href="#">Scrape Rotowire</a>
+          <div id="scraper-status" class="mt-3 small">Last Updated: {{ last_updated }}</div>
         </div>
         <div class="col-md-4">
           <h5 class="text-danger">Failed ( {{ result }} )</h5>
@@ -38,5 +42,16 @@
       </div>
     </form>
   </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <script type="text/javascript">
+    $('.trigger-scraper').click(function() {
+      $('#scraper-status').html('Scraping...');
+      $.post( "/trigger-scraper", {}, function( data ) {
+        $('#scraper-status').addClass('text-success');
+        $('#scraper-status').html(data);
+      });
+    })
+  </script>
 </body>
 </html>
