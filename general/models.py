@@ -17,36 +17,76 @@ def parse_name(name):
         return name_[0], ' '.join(name_[1:])
     return name, ''
 
+POSITION = (
+    ('PG', 'PG'), 
+    ('SG', 'SG'), 
+    ('SF', 'SF'), 
+    ('PF', 'PF'), 
+    ('C', 'C')
+)
+
+TEAM = (
+    ('HOU', 'HOU'),
+    ('GS', 'GS'),
+    ('CHA', 'CHA'),
+    ('DEN', 'DEN'),
+    ('ATL', 'ATL'),
+    ('CLE', 'CLE'),
+    ('PHI', 'PHI'),
+    ('MIL', 'MIL'),
+    ('NO', 'NO'),
+    ('MIN', 'MIN'),
+    ('WAS', 'WAS'),
+    ('LAL', 'LAL'),
+    ('SA', 'SA'),
+    ('MIA', 'MIA'),
+    ('DET', 'DET'),
+    ('POR', 'POR'),
+    ('BOS', 'BOS'),
+    ('OKC', 'OKC'),
+    ('TOR', 'TOR'),
+    ('PHO', 'PHO'),
+    ('UTA', 'UTA'),
+    ('ORL', 'ORL'),
+    ('MEM', 'MEM'),
+    ('CHI', 'CHI'),
+    ('DAL', 'DAL'),
+    ('NY', 'NY'),
+    ('BKN', 'BKN'),
+    ('LAC', 'LAC'),
+    ('IND', 'IND'),
+    ('SAC', 'SAC')
+)
+
 class Player(models.Model):
     uid = models.IntegerField()
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     avatar = models.CharField(max_length=250, default="/static/img/nba.ico")
     injury = models.CharField(max_length=250, blank=True, null=True)
-    minutes = models.FloatField()
-    money_line = models.IntegerField()
-    opponent = models.CharField(max_length=50)
-    over_under = models.FloatField()
-    point_spread = models.FloatField()
-    position = models.CharField(max_length=50)
+    minutes = models.FloatField(default=0)
+    money_line = models.IntegerField(default=0)
+    opponent = models.CharField(max_length=50, blank=True, null=True)
+    over_under = models.FloatField(default=0)
+    point_spread = models.FloatField(default=0)
+    position = models.CharField(max_length=50, choices=POSITION)
     actual_position = models.CharField(max_length=50)
-    proj_ceiling = models.FloatField()
-    proj_custom = models.FloatField()
-    proj_floor = models.FloatField()
-    proj_original = models.FloatField()
+    proj_ceiling = models.FloatField(default=0)
+    proj_custom = models.FloatField(default=0)
+    proj_floor = models.FloatField(default=0)
+    proj_original = models.FloatField(default=0)
     proj_points = models.FloatField()
-    proj_rotowire = models.FloatField()
-    proj_site = models.FloatField()
-    proj_third_party_one = models.FloatField()
-    proj_third_party_two = models.FloatField()
+    proj_rotowire = models.FloatField(default=0)
+    proj_site = models.FloatField(default=0)
+    proj_third_party_one = models.FloatField(default=0)
+    proj_third_party_two = models.FloatField(default=0)
     salary = models.FloatField()
-    salary_custom = models.FloatField()
-    salary_original = models.FloatField()
-    team = models.CharField(max_length=50)
-    team_points = models.FloatField()
-    value = models.FloatField()
+    salary_custom = models.FloatField(default=0)
+    salary_original = models.FloatField(default=0)
+    team = models.CharField(max_length=50, choices=TEAM)
+    team_points = models.FloatField(default=0)
+    value = models.FloatField(default=0)
     play_today = models.BooleanField(default=False)
-    
 
     rid = models.CharField(max_length=30, null=True, blank=True)
     data_source = models.CharField(max_length=30, choices=DATA_SOURCE, default='FanDuel')

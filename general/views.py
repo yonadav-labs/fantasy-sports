@@ -19,8 +19,6 @@ from general.models import *
 from general.lineup import *
 from general.color import *
 
-POSITION = ['PG', 'SG', 'SF', 'PF', 'C']
-
 CSV_FIELDS = {
     'FanDuel': ['PG', 'PG', 'SG', 'SG', 'SF', 'SF', 'PF', 'PF', 'C'],
     'DraftKings': ['PG', 'SG', 'SF', 'PF', 'C', 'G', 'F', 'UTIL'],

@@ -10,6 +10,7 @@ class PlayerAdmin(admin.ModelAdmin):
                     'proj_points', 'data_source', 'avatar', 'created_at', 'updated_at']
     search_fields = ['first_name', 'last_name', 'team']
     list_filter = ['team', 'data_source', 'position', 'play_today']
+    save_as = True
 
 
 class PlayerGameAdmin(admin.ModelAdmin):
