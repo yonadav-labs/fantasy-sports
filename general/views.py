@@ -13,6 +13,7 @@ from django.utils.encoding import smart_str
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Avg, Q, Sum
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django.contrib.admin.views.decorators import staff_member_required
 
 from general.models import *
 from general.lineup import *
@@ -309,6 +310,7 @@ def export_manual_lineup(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str( os.path.basename( path ) )
     return response
 
+@staff_member_required
 def put_ids(request):
     if request.method == 'GET':
         result = '-'
@@ -322,8 +324,8 @@ def put_ids(request):
         failed = ''
         for idx, name in enumerate(names_):
             nns = name.split()
-            flag = Player.objects.filter(data_source=ds, rid=ids_[idx]).exists()
-            if len(nns) > 1 and not flag:
+            flag = False
+            if len(nns) > 1:
                 d = { 'rid': ids_[idx] }
                 flag = Player.objects.filter(first_name=nns[0], last_name=nns[1], data_source=ds).update(**d)
 

@@ -6,25 +6,14 @@
 </head>
 <body>
   <div class="container-fluid">
-    <div id="header">
-      <div class="nav-trigger hamburger">
-        <div class="open-btn">
-          <span class="mobile"></span>
-          <span class="mobile"></span>
-          <span class="mobile"></span>
-        </div>
-      </div>
-      <div id="sitename">
-        <span class="wsite-logo">
-          <h3 id="wsite-title" class="text-info mb-5">DFS SQUAD</h3>
-        </span>
-      </div>
-    </div>
     <form method="POST">
       {% csrf_token %}
       <div class="row">
+        <div class="col-md-10 offset-md-1">
+          <h3 class="text-success my-4">Green Light Optimizer Tool</h3>
+        </div>
         <div class="clearfix"></div>
-        <div class="col-md-2">
+        <div class="col-md-2 offset-md-1">
           <h5>Name</h5>
           <textarea name="names" rows="30" class="form-control" required="">{{ names }}</textarea>
         </div>
@@ -33,13 +22,14 @@
           <textarea name="ids" rows="30" class="form-control" required="">{{ ids }}</textarea>
         </div>
         <div class="col-md-1 mt-1 text-center">
-          <h5>DS</h5>
-          <select name="ds" class="form-control mb-5" required="">
+          <h5>For</h5>
+          <select name="ds" class="form-control mb-3" required="">
+            <option value="">Choose</option>
             <option {% if ds == 'FanDuel' %} selected {% endif %}>FanDuel</option>
             <option {% if ds == 'DraftKings' %} selected {% endif %}>DraftKings</option>
-            <option {% if ds == 'Yahoo' %} selected {% endif %}>Yahoo</option>
           </select>
-          <input type="submit" name="" value="Upload" class="mt-4 btn btn-success">
+          <input type="submit" name="" value="Upload" class="btn btn-success btn-sm mb-5">
+          <a class="btn btn-success btn-sm" href="#/scrape">Scrape Rotowire</a>
         </div>
         <div class="col-md-4">
           <h5 class="text-danger">Failed ( {{ result }} )</h5>

@@ -18,7 +18,7 @@ from django.contrib import admin
 
 from general.views import *
 
-admin.site.site_header = "Fantasy NBA"
+admin.site.site_header = "Green Light Optimizer"
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
