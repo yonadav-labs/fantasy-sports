@@ -1,12 +1,11 @@
-{% load extra %}
 <table class="table table-hover table-responsive-sm">
   <thead>
     <tr>
       <th><input type="checkbox" id="chk-all" checked="" onclick="choose_all(this)"></th>
       <th colspan="2">Player</th>
-      <th class="text-right pr-3">Salary</th>
-      <th class="">Projections</th>
-      <th class="" colspan="2">PT/Sal</th>
+      <th class="text-right sort-col" data-order="salary">Salary <i class="fas fa-sort-amount-down {% if order != 'salary' %} d-none {% endif %}"></i></th>
+      <th class="sort-col" data-order="proj_points">Projections <i class="fas fa-sort-amount-down {% if order != 'proj_points' %} d-none {% endif %}"></i></th>
+      <th class="sort-col" data-order="pt_sal" colspan="2">PT/Sal <i class="fas fa-sort-amount-down {% if order != 'pt_sal' %} d-none {% endif %}"></i></th>
     </tr>
   </thead>
   <tbody>
@@ -24,14 +23,14 @@
                 <span class="text-danger font-weight-bold ml-3">{{ ii.injury }}</span>
               {% endif %}
             </div>
-            <div class="sub">{{ ii.team }} {{ ii.opponent1 }}</div>
+            <div class="sub">{{ ii.team }}</div>
           </a>
         </td>
         <td class="text-right pr-3">{% if ds != 'Yahoo' %}${% endif %}{{ ii.salary|floatformat:0 }}</td>
         <td class="pl-3">
           <input type="text" class="form-control text-right pl-0 pr-3" data-id="{{ ii.id }}" value="{{ ii.proj_points }}" style="width: 60px;" onchange="change_point(this);" readonly="">
         </td>
-        <td>{{ ii|salery_per_projection:ds }}</td>
+        <td>{{ ii.pt_sal|floatformat:1 }}</td>
         <td>
           <i class="fas fa-lock-open fa-md lock unlocked plb-{{ ii.id }}" onclick="toggleLock(this, {{ ii.id }});"></i>
         </td>

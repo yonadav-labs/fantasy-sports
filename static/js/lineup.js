@@ -83,6 +83,11 @@ $(function() {
     $(this).toggleClass('active');
     filterTable();
   });
+
+  // sort
+  $('#div-players').on('click', 'th.sort-col', function() {
+    getPlayers($(this).data('order'));
+  })
 })
 
 $("body").on('shown.bs.collapse', ".collapse", function() {
@@ -165,7 +170,7 @@ function change_point (obj) {
   $.post( "/update-point", { pid: pid, val: val }, function( data ) {})
 }
 
-function getPlayers () {
+function getPlayers (order) {
   var games = '';
   $('.slate').find('input:checked').each(function() {
     games += $(this).val()+';';
@@ -174,16 +179,22 @@ function getPlayers () {
   $.post( "/get-players", 
     { 
       ds: ds,
-      games: games
+      games: games,
+      order: order
     }, 
     function( data ) {
       $( "#div-players" ).html( data.html );
-      
-      if ($('#div-result').length > 0) {  // optimizer
-        $('#div-result').html('');
-      } else {
-        num_lineups = data.num_lineups;
-        init_lineups();
+      var is_optimizer = $('#div-result').length > 0;
+
+      if (!order) {
+        if (is_optimizer) {
+          $('#div-result').html('');
+        } else {
+          num_lineups = data.num_lineups;
+          init_lineups();
+        }        
+      } else if (!is_optimizer) {
+        build_lineup(null);
       }
     }
   );

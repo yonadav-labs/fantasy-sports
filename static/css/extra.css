@@ -501,3 +501,7 @@ input[type="search"]::-webkit-search-cancel-button {
 #accordion .card-header {
     padding: 0.35rem 1.25rem;
 }
+
+.sort-col {
+    cursor: pointer;
+}

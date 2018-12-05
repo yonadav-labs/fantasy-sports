@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Avg, Q, Sum
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.contrib.admin.views.decorators import staff_member_required
+from django.forms.models import model_to_dict
 
 from general.models import *
 from general.lineup import *
@@ -52,6 +53,9 @@ def lineup_optimizer(request):
     return render(request, 'lineup-optimizer.html', locals())
 
 def _is_full_lineup(lineup, ds):
+    if not lineup:
+        return False
+        
     num_players = sum([1 for ii in lineup if ii['player']])
     return num_players == ROSTER_SIZE[ds]
 
@@ -152,12 +156,19 @@ def build_lineup(request):
 @csrf_exempt
 def get_players(request):
     ds = request.POST.get('ds')
+    order = request.POST.get('order', 'proj_points')
     teams = request.POST.get('games').strip(';').replace(';', '-').split('-')
-    players = Player.objects.filter(data_source=ds, 
-                                    team__in=teams,
-                                    play_today=True) \
-                            .order_by('-proj_points')
 
+    factor = 1 if ds == 'Yahoo' else 1000
+    players = []
+
+    for ii in Player.objects.filter(data_source=ds, team__in=teams, play_today=True):
+        player = model_to_dict(ii, fields=['id', 'injury', 'avatar', 'salary', 'proj_points', 
+                                           'actual_position', 'first_name', 'last_name', 'team'])
+        player['pt_sal'] = ii.proj_points * factor / ii.salary if ii.salary else 0
+        players.append(player)
+
+    players = sorted(players, key=lambda k: k[order], reverse=True)
     result = { 
         'html': render_to_string('player-list_.html', locals()),
         'num_lineups': request.session.get(ds+'_num_lineups', 1),
