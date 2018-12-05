@@ -20,7 +20,7 @@ def get_players(data_source):
 
         players = requests.get(url).json()
 
-        fields = ['first_name', 'last_name', 'minutes', 'money_line', 
+        fields = ['minutes', 'money_line', 
                   'over_under', 'point_spread', 'position', 'proj_ceiling', 'opponent',
                   'proj_custom', 'proj_floor', 'proj_original', 'proj_rotowire', 
                   'proj_site', 'proj_third_party_one', 'proj_third_party_two', 'actual_position', 
@@ -32,8 +32,10 @@ def get_players(data_source):
             # if defaults['proj_points'] <= 0:
             #     defaults['proj_points'] = float(ii['proj_points'])
             defaults['play_today'] = True
-
             defaults['injury'] = html2text.html2text(ii['injury']).strip()
+            defaults['first_name'] = ii['first_name'].replace('.', '')
+            defaults['last_name'] = ii['last_name'].replace('.', '')
+
             obj = Player.objects.update_or_create(uid=ii['id'], data_source=data_source,
                                                   defaults=defaults)
     except:

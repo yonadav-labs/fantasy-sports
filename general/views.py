@@ -323,12 +323,11 @@ def put_ids(request):
 
         failed = ''
         for idx, name in enumerate(names_):
-            nns = name.split()
-            flag = False
-            if len(nns) > 1:
-                d = { 'rid': ids_[idx] }
-                flag = Player.objects.filter(first_name=nns[0], last_name=nns[1], data_source=ds).update(**d)
-
+            d = { 'rid': ids_[idx] }
+            first_name, last_name = parse_name(name)
+            flag = Player.objects.filter(first_name__iexact=first_name, 
+                                         last_name__iexact=last_name, 
+                                         data_source=ds).update(**d)
             if not flag:
                 failed += '{} ( {} ) - Not Matching\n'.format(ids_[idx], name)
         result = '{} / {}'.format(len(failed.split('\n')), len(ids_))
