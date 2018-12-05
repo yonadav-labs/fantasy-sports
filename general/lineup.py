@@ -34,19 +34,12 @@ class Roster:
     def position_order(self, player):
         return self.POSITION_ORDER[player.position]
 
-    def dict_position_order(self, player):
-        if player['pos'] in self.POSITION_ORDER:
-            return self.POSITION_ORDER[player['pos']]
-        else:
-            return 100
-
     def sorted_players(self):
         return sorted(self.players, key=self.position_order)
 
-    def get_csv(self, ds):
-        s = ''
+    def get_roster_players(self, ds):
         if ds == 'FanDuel': 
-            s = ','.join(str(x) for x in self.sorted_players())+'\n'
+            return self.sorted_players()
         else:
             pos = {
                 'DraftKings': ['PG', 'SG', 'SF', 'PF', 'C', 'PG,SG', 'SF,PF'],
@@ -54,15 +47,16 @@ class Roster:
             }
             pos = pos[ds]
             players = list(self.players)
+            players_ = []
+
             for ii in pos:
                 for jj in players:
                     if jj.position in ii:
-                        s += str(jj) + ','
+                        players_.append(jj)
                         players.remove(jj)
                         break
-            s += str(players[0])+'\n'
-
-        return s
+            players_.append(players[0])
+            return players_
 
     def __repr__(self):
         s = '\n'.join(str(x) for x in self.sorted_players())

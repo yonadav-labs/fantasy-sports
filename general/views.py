@@ -55,7 +55,7 @@ def lineup_optimizer(request):
 def _is_full_lineup(lineup, ds):
     if not lineup:
         return False
-        
+
     num_players = sum([1 for ii in lineup if ii['player']])
     return num_players == ROSTER_SIZE[ds]
 
@@ -270,7 +270,7 @@ def gen_lineups(request):
     ds = request.POST.get('ds')
     header = CSV_FIELDS[ds] + ['Spent', 'Projected']
     
-    rows = [ii.get_csv(ds).strip().split(',')+[int(ii.spent()), ii.projected()]
+    rows = [[str(jj) for jj in ii.get_roster_players(ds)]+[int(ii.spent()), ii.projected()]
             for ii in lineups]
 
     result = {
@@ -281,6 +281,14 @@ def gen_lineups(request):
     return JsonResponse(result, safe=False)
 
 
+def _get_export_cell(player, ds):
+    if ds == 'Yahoo':
+        return str(player)
+    elif ds == 'FanDuel':
+        return '{}:{}'.format(player.rid, str(player))
+    else:
+        return '{} ({})'.format(str(player), player.rid)
+
 def export_lineups(request):
     lineups, _ = _get_lineups(request)
     ds = request.POST.get('ds')
@@ -290,7 +298,7 @@ def export_lineups(request):
     with open(path, 'w') as f:
         f.write(','.join(csv_fields)+'\n')
         for ii in lineups:
-            f.write(ii.get_csv(ds))
+            f.write(','.join([_get_export_cell(jj, ds) for jj in ii.get_roster_players(ds)])+'\n')
     
     wrapper = FileWrapper( open( path, "r" ) )
     content_type = mimetypes.guess_type( path )[0]
@@ -313,7 +321,7 @@ def export_manual_lineup(request):
             key = '{}_lineup_{}'.format(ds, idx)
             lineup = request.session.get(key)
             players = [Player.objects.get(id=ii['player']) for ii in lineup]
-            f.write(','.join(['{} {}'.format(ii.first_name, ii.last_name) for ii in players])+'\n')
+            f.write(','.join([_get_export_cell(ii, ds) for ii in players])+'\n')
         
     wrapper = FileWrapper( open( path, "r" ) )
     content_type = mimetypes.guess_type( path )[0]
