@@ -1,4 +1,5 @@
 import random
+import datetime
 import requests
 
 import os
@@ -12,6 +13,10 @@ django.setup()
 from general.models import *
 from general import html2text
 import pdb
+
+def _deviation_projection(val):
+    result = float(val) + random.randrange(-20, 20) / 10.0
+    return result if result >= 0 else float(val)
 
 def get_players(data_source):
     try:
@@ -28,16 +33,23 @@ def get_players(data_source):
         print data_source, len(players)
         for ii in players:
             defaults = { key: str(ii[key]).replace(',', '') for key in fields }
-            defaults['proj_points'] = float(ii['proj_points']) + random.randrange(-20, 20) / 10.0
-            if defaults['proj_points'] <= 0:
-                defaults['proj_points'] = float(ii['proj_points'])
             defaults['play_today'] = True
             defaults['injury'] = html2text.html2text(ii['injury']).strip()
-            defaults['first_name'] = ii['first_name'].replace('.', '')
-            defaults['last_name'] = ii['last_name'].replace('.', '')
 
-            obj = Player.objects.update_or_create(uid=ii['id'], data_source=data_source,
-                                                  defaults=defaults)
+            player = Player.objects.filter(uid=ii['id'], data_source=data_source)
+            if not player.exists():
+                defaults['uid'] = ii['id']
+                defaults['proj_points'] = _deviation_projection(ii['proj_points'])
+                defaults['first_name'] = ii['first_name'].replace('.', '')
+                defaults['last_name'] = ii['last_name'].replace('.', '')
+    
+                Player.objects.create(**defaults)
+            else:
+                criteria = datetime.datetime.combine(datetime.date.today(), datetime.time(9, 30, 0)) # utc time
+                if player.first().updated_at.replace(tzinfo=None) < criteria:
+                    defaults['proj_points'] = _deviation_projection(ii['proj_points'])
+
+                player.update(**defaults)
     except:
         print("*** some thing is wrong ***")
 
