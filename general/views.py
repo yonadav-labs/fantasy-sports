@@ -234,7 +234,7 @@ def mean(numbers):
 def _get_lineups(request):
     ids = request.POST.getlist('ids')
     locked = request.POST.getlist('locked')
-    num_lineups = int(request.POST.get('num-lineups'))
+    num_lineups = min(int(request.POST.get('num-lineups')), 150)
     ds = request.POST.get('ds')
 
     ids = [int(ii) for ii in ids]
