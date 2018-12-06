@@ -334,7 +334,7 @@ def export_manual_lineup(request):
 
 @staff_member_required
 def put_ids(request):
-    last_updated = Player.objects.all().order_by('-updated_at').first().updated_at
+    last_updated = Game.objects.all().order_by('-updated_at').first().updated_at
 
     if request.method == 'GET':
         result = '-'
