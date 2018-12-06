@@ -14,9 +14,15 @@ from general.models import *
 from general import html2text
 import pdb
 
-def _deviation_projection(val):
-    result = float(val) + random.randrange(-20, 20) / 10.0
-    return result if result >= 0 else float(val)
+def _deviation_projection(val, salary, ds):
+    if salary > 9000:
+        factor = (20, 40)
+    elif salary > 4000:
+        factor = (10, 20)
+    else:
+        factor = (2, 4)
+
+    return float(val) + random.randrange(factor[0], factor[1]) / 10.0
 
 def get_players(data_source):
     try:
@@ -39,7 +45,7 @@ def get_players(data_source):
             player = Player.objects.filter(uid=ii['id'], data_source=data_source)
             if not player.exists():
                 defaults['uid'] = ii['id']
-                defaults['proj_points'] = _deviation_projection(ii['proj_points'])
+                defaults['proj_points'] = _deviation_projection(ii['proj_points'], ii['salary'], data_source)
                 defaults['first_name'] = ii['first_name'].replace('.', '')
                 defaults['last_name'] = ii['last_name'].replace('.', '')
     
@@ -47,7 +53,7 @@ def get_players(data_source):
             else:
                 criteria = datetime.datetime.combine(datetime.date.today(), datetime.time(15, 0, 0)) # utc time - 10 am EST
                 if player.first().updated_at.replace(tzinfo=None) < criteria:
-                    defaults['proj_points'] = _deviation_projection(ii['proj_points'])
+                    defaults['proj_points'] = _deviation_projection(ii['proj_points'], ii['salary'], data_source)
 
                 player.update(**defaults)
     except:

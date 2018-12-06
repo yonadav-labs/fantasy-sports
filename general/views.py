@@ -284,10 +284,8 @@ def gen_lineups(request):
 def _get_export_cell(player, ds):
     if ds == 'Yahoo':
         return str(player)
-    elif ds == 'FanDuel':
-        return '{}:{}'.format(player.rid, str(player))
     else:
-        return '{} ({})'.format(str(player), player.rid)
+        return player.rid or str(player) + ' - No ID'
 
 def export_lineups(request):
     lineups, _ = _get_lineups(request)
@@ -353,7 +351,7 @@ def put_ids(request):
                                          last_name__iexact=last_name, 
                                          data_source=ds).update(**d)
             if not flag:
-                failed += '{} ( {} ) - Not Matching\n'.format(ids_[idx], name)
+                failed += '{}\n'.format(ids_[idx], name)
         result = '{} / {}'.format(len(failed.split('\n')), len(ids_))
 
     return render(request, 'put-ids.html', locals())

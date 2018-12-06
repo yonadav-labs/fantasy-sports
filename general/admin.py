@@ -7,7 +7,7 @@ from general.models import *
 
 class PlayerAdmin(admin.ModelAdmin):
     list_display = ['first_name', 'last_name', 'position', 'team', 'opponent', 'salary', 'play_today', 
-                    'proj_points', 'data_source', 'avatar', 'created_at', 'updated_at']
+                    'proj_points', 'data_source', 'updated_at', 'avatar', 'created_at']
     search_fields = ['first_name', 'last_name', 'team']
     list_filter = ['team', 'data_source', 'position', 'play_today']
     save_as = True
