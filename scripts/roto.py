@@ -45,7 +45,7 @@ def get_players(data_source):
     
                 Player.objects.create(**defaults)
             else:
-                criteria = datetime.datetime.combine(datetime.date.today(), datetime.time(9, 30, 0)) # utc time
+                criteria = datetime.datetime.combine(datetime.date.today(), datetime.time(15, 0, 0)) # utc time - 10 am EST
                 if player.first().updated_at.replace(tzinfo=None) < criteria:
                     defaults['proj_points'] = _deviation_projection(ii['proj_points'])
 
