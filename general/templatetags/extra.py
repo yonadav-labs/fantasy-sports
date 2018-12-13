@@ -28,6 +28,11 @@ def cus_proj(player, session):
     return cus_proj.get(str(player['id']), player['proj_points'])
 
 @register.filter
+def cus_proj_cls(player, session):
+    cus_proj = session.get('cus_proj', {})
+    return 'custom' if str(player['id']) in cus_proj else ''
+
+@register.filter
 def cus_proj_(player, session):
     if player:
         cus_proj = session.get('cus_proj', {})

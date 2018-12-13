@@ -11,7 +11,7 @@
   </thead>
   <tbody>
     {% for ii in players %}
-      <tr>
+      <tr class="{{ ii|cus_proj_cls:request.session }}">
         <td><input type="checkbox" name="ids" {% if not ii.injury %} checked="" {% endif %} value="{{ ii.id }}"></td>
         <td style="cursor: pointer;" onclick="pr_click(this)">
           <img src="{{ ii.avatar }}" height="30" class="mr-2"> {{ ii.actual_position }}
@@ -29,9 +29,10 @@
         </td>
         <td class="text-right pr-3">{% if ds != 'Yahoo' %}${% endif %}{{ ii.salary|floatformat:0 }}</td>
         <td class="pl-3">
-          <input type="number" min="0" max="100" step="0.1" class="form-control text-right pl-0 pr-1" data-id="{{ ii.id }}" value="{{ ii|cus_proj:request.session }}" style="width: 60px;" onchange="change_point(this);">
+          <input type="number" min="0" max="100" step="0.1" class="form-control d-inline text-right pl-0 pr-1" data-id="{{ ii.id }}" value="{{ ii|cus_proj:request.session }}" style="width: 60px;" onchange="change_point(this, 1);">
+          <i class="fas fa-times" onclick="clear_proj(this);"></i>
         </td>
-        <td>{{ ii.pt_sal|floatformat:1 }}</td>
+        <td class="pt-sal">{{ ii.pt_sal|floatformat:1 }}</td>
         <td>
           <i class="fas fa-lock-open fa-md lock unlocked plb-{{ ii.id }}" onclick="toggleLock(this, {{ ii.id }});"></i>
         </td>

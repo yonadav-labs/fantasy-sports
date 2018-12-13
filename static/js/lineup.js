@@ -164,10 +164,24 @@ function choose_all (obj) {
   $('input[type="checkbox"]').prop("checked", $(obj).prop('checked'));
 }
 
-function change_point (obj) {
-  var pid = $(obj).data('id'),
+function change_point (obj, clear) {
+  var pid = $(obj).data('id') * clear,
       val = $(obj).val();
-  $.post( "/update-point", { pid: pid, val: val }, function( data ) {});
+  $.post( "/update-point", 
+    { pid: pid, val: val },
+    function( data ) {
+      $(obj).closest('tr').find('td.pt-sal').html(data.pt_sal);
+      if (clear < 0) {
+        $(obj).closest('tr').removeClass('custom');
+        $(obj).val(data.points);
+      } else {
+        $(obj).closest('tr').addClass('custom');
+      }
+    });
+}
+
+function clear_proj (obj) {
+  change_point($(obj).prev(), -1);
 }
 
 function getPlayers (order) {

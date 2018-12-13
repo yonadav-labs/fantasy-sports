@@ -9,8 +9,6 @@ if(inIframe()) {
     $('body').toggleClass('d-none');
 } else {
     $('.container-fluid').remove();
-    // $('nav').toggleClass('d-none');
-    $('body').toggleClass('d-none');
     $('.lineups-container').toggleClass('container');
     $('.lineups-container').toggleClass('container-iframe');
 }

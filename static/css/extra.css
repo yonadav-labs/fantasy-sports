@@ -28,6 +28,19 @@ html {
     align-items: center;
 }
 
+tr.custom {
+    background: #C1FFC1;
+}
+
+tr i.fa-times {
+    padding-left: 3px;
+    display: none;    
+}
+
+tr.custom:hover i.fa-times {
+    display: inline-block;
+}
+
 body {
     background: #5BC85B;
 }

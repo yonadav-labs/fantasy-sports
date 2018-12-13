@@ -302,10 +302,24 @@ def update_point(request):
     pid = request.POST.get('pid')
     points = request.POST.get('val')
 
+    player = Player.objects.get(id=pid.strip('-'))
+    factor = 1 if player.data_source == 'Yahoo' else 1000
+
     cus_proj = request.session.get('cus_proj', {})
-    cus_proj[pid] = points
+    if '-' in pid:
+        del cus_proj[pid[1:]]
+        points = player.proj_points
+    else:
+        cus_proj[pid] = points
+
     request.session['cus_proj'] = cus_proj
-    return HttpResponse('')
+
+    result = {
+        'points': '{:.1f}'.format(float(points)),
+        'pt_sal': '{:.1f}'.format(float(points) * factor / player.salary if player.salary else 0)
+    }
+
+    return JsonResponse(result, safe=False)
 
 
 def _get_export_cell(player, ds):
