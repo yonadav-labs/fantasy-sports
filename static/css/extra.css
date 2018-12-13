@@ -28,7 +28,11 @@ html {
     align-items: center;
 }
 
-tr.custom {
+._tu48jf {
+    width: 60px;
+}
+
+tr.custom ._tu48jf {
     background: #C1FFC1;
 }
 

@@ -29,7 +29,7 @@
         </td>
         <td class="text-right pr-3">{% if ds != 'Yahoo' %}${% endif %}{{ ii.salary|floatformat:0 }}</td>
         <td class="pl-3">
-          <input type="number" min="0" max="100" step="0.1" class="form-control d-inline text-right pl-0 pr-1" data-id="{{ ii.id }}" value="{{ ii|cus_proj:request.session }}" style="width: 60px;" onchange="change_point(this, 1);">
+          <input type="number" min="0" max="100" step="0.1" class="form-control d-inline text-right pl-0 pr-1 _tu48jf" data-id="{{ ii.id }}" value="{{ ii|cus_proj:request.session }}" onchange="change_point(this, 1);">
           <i class="fas fa-times" onclick="clear_proj(this);"></i>
         </td>
         <td class="pt-sal">{{ ii.pt_sal|floatformat:1 }}</td>
