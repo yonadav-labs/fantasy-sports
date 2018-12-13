@@ -34,4 +34,5 @@ urlpatterns = [
     url(r'^go-dfs', go_dfs, name="go_dfs"),
     url(r'^tool', put_ids, name="put_ids"),
     url(r'^trigger-scraper', trigger_scraper, name="trigger_scraper"),
+    url(r'^update-point', update_point, name="update_point"),
 ]

@@ -184,27 +184,28 @@ def get_lineup(ds, players, teams, locked, max_point, con_mul):
         return roster
 
 
-def calc_lineups(players, num_lineups, locked=[], ds='FanDuel'):
+def calc_lineups(players, num_lineups, locked, ds, cus_proj):
     result = []
 
     max_point = 10000
     teams = set([ii.team for ii in players])
 
     con_mul = []
-    if ds == 'DraftKings':      # multi positional in DraftKings
-        players_ = []
-        idx = 0
-        for ii in players:
-            p = vars(ii)
-            p.pop('_state')
-            ci_ = []
-            for jj in ii.actual_position.split('/'):
-                ci_.append(idx)
-                p['position'] = jj
-                players_.append(Player(**p))
-                idx += 1
-            con_mul.append(ci_)
-        players = players_
+    players_ = []
+    idx = 0
+    for ii in players:
+        p = vars(ii)
+        p.pop('_state')
+        p['proj_points'] = float(cus_proj.get(str(ii.id), ii.proj_points))
+
+        ci_ = []
+        for jj in ii.actual_position.split('/'):
+            ci_.append(idx)
+            p['position'] = jj
+            players_.append(Player(**p))
+            idx += 1
+        con_mul.append(ci_)
+    players = players_
 
     while True:
         roster = get_lineup(ds, players, teams, locked, max_point, con_mul)

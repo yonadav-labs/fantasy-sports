@@ -23,6 +23,13 @@ def ou_ml(game, team):
         return '( {} )'.format(int(game.ou))
 
 @register.filter
-def salery_per_projection(player, ds):
-	factor = 1 if ds == 'Yahoo' else 1000
-	return '{:.1f}'.format(player.proj_points * factor / player.salary) if player.salary else '-'
+def cus_proj(player, session):
+    cus_proj = session.get('cus_proj', {})
+    return cus_proj.get(str(player['id']), player['proj_points'])
+
+@register.filter
+def cus_proj_(player, session):
+    if player:
+        cus_proj = session.get('cus_proj', {})
+        return cus_proj.get(str(player.id), player.proj_points)
+    return ''

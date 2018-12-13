@@ -167,7 +167,7 @@ function choose_all (obj) {
 function change_point (obj) {
   var pid = $(obj).data('id'),
       val = $(obj).val();
-  $.post( "/update-point", { pid: pid, val: val }, function( data ) {})
+  $.post( "/update-point", { pid: pid, val: val }, function( data ) {});
 }
 
 function getPlayers (order) {

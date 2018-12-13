@@ -131,13 +131,14 @@ def build_lineup(request):
     num_players = 0
     pids = []
 
+    cus_proj = request.session.get('cus_proj', {})
     for ii in lineup:
         if ii['player']:
             pids.append(ii['player'])
             player = Player.objects.get(id=ii['player'])
             num_players += 1
             sum_salary += player.salary
-            sum_proj += player.proj_points
+            sum_proj += float(cus_proj.get(str(player.id), player.proj_points))
         else:
             player = {}
         players.append({ 'pos':ii['pos'], 'player': player })
@@ -162,10 +163,13 @@ def get_players(request):
     factor = 1 if ds == 'Yahoo' else 1000
     players = []
 
+    cus_proj = request.session.get('cus_proj', {})
+
     for ii in Player.objects.filter(data_source=ds, team__in=teams, play_today=True):
-        player = model_to_dict(ii, fields=['id', 'injury', 'avatar', 'salary', 'proj_points', 
-                                           'actual_position', 'first_name', 'last_name', 'team'])
-        player['pt_sal'] = ii.proj_points * factor / ii.salary if ii.salary else 0
+        player = model_to_dict(ii, fields=['id', 'injury', 'avatar', 'salary', 'team',
+                                           'actual_position', 'first_name', 'last_name'])
+        player['proj_points'] = float(cus_proj.get(str(ii.id), ii.proj_points))
+        player['pt_sal'] = player['proj_points'] * factor / ii.salary if ii.salary else 0
         players.append(player)
 
     players = sorted(players, key=lambda k: k[order], reverse=True)
@@ -241,7 +245,8 @@ def _get_lineups(request):
     locked = [int(ii) for ii in locked]
 
     players = Player.objects.filter(id__in=ids)
-    lineups = calc_lineups(players, num_lineups, locked, ds)
+    cus_proj = request.session.get('cus_proj', {})
+    lineups = calc_lineups(players, num_lineups, locked, ds, cus_proj)
     return lineups, players
 
 
@@ -279,6 +284,17 @@ def gen_lineups(request):
     }
 
     return JsonResponse(result, safe=False)
+
+
+@csrf_exempt
+def update_point(request):
+    pid = request.POST.get('pid')
+    points = request.POST.get('val')
+
+    cus_proj = request.session.get('cus_proj', {})
+    cus_proj[pid] = points
+    request.session['cus_proj'] = cus_proj
+    return HttpResponse('')
 
 
 def _get_export_cell(player, ds):

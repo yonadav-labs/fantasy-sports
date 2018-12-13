@@ -1,3 +1,4 @@
+{% load extra %}
 <div class="pb-2 j89g893t34">
   <div class="p-2">
     <table class="table table-striped table-hover table-responsive-xs">
@@ -25,7 +26,7 @@
             </td>
             <td>{{ ii.player.team }}</td>
             <td class="text-right pr-3">{% if ds != 'Yahoo' and ii.player %}${% endif %}{{ ii.player.salary|floatformat:0 }}</td>
-            <td class="text-center">{{ ii.player.proj_points }}</td>
+            <td class="text-center">{{ ii.player|cus_proj_:request.session }}</td>
           </tr>
         {% endfor %}
         <tr class="">
