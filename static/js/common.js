@@ -6,7 +6,6 @@ function inIframe () {
     }
 }
 if(inIframe()) {
-    $('body').toggleClass('d-none');
 } else {
     $('.container-fluid').remove();
     $('.lineups-container').toggleClass('container');
