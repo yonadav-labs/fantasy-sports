@@ -76,6 +76,7 @@ def build_lineup(request):
     pid = request.POST.get('pid')
     idx = int(request.POST.get('idx'))
 
+    cus_proj = request.session.get('cus_proj', {})
     request.session['ds'] = ds
     key = '{}_lineup_{}'.format(ds, idx)
     num_lineups = request.session.get(ds+'_num_lineups', 1)
@@ -100,6 +101,17 @@ def build_lineup(request):
         for ii in lineup:
             if ii['player'] == pid:
                 ii['player'] = ''
+    elif pid == 'optimize':         # manual optimize
+        players = Player.objects.filter(play_today=True, data_source=ds)
+        num_lineups = 1
+        locked = [int(ii['player']) for ii in lineup if ii['player']]
+        lineups = calc_lineups(players, num_lineups, locked, ds, cus_proj)
+        if lineups:
+            roster = lineups[0].get_roster_players(ds)
+            lineup = [{ 'pos':ii, 'player': str(roster[idx].id) } for idx, ii in enumerate(CSV_FIELDS[ds])]
+            request.session[key] = lineup
+        else:
+            msg = 'Sorry, something is wrong.'
     elif pid:                       # add a player
         # check whether he is available
         sum_salary = 0
@@ -131,7 +143,6 @@ def build_lineup(request):
     num_players = 0
     pids = []
 
-    cus_proj = request.session.get('cus_proj', {})
     for ii in lineup:
         if ii['player']:
             pids.append(ii['player'])
