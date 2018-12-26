@@ -4,7 +4,7 @@ var ds = 'DraftKings',
 $(function() {
   // when change slate
   $('.slate input').on('change', function() {   // game slates checkbox
-    getPlayers();
+    getPlayers('-');
   });
 
   // change tab
@@ -103,7 +103,8 @@ function build_lineup(pid) {
   $.post( "/build-lineup", {
     pid: pid,
     ds: ds,
-    idx: bid.replace('collapse_', '')
+    idx: bid.replace('collapse_', ''),
+    ids: $('#frm-player').serialize()
   }, function( data ) {
     $("#"+bid).html(data.html);
     $('.fas.lock').removeClass('fa-lock');
@@ -208,13 +209,13 @@ function getPlayers (order) {
         } else {
           num_lineups = data.num_lineups;
           init_lineups();
-        }        
+        }
       } else if (!is_optimizer) {
         build_lineup(null);
       }
     }
   );
-}  
+}
 
 function toggleLock(obj, pid) {
   if ($('#div-lineup').length > 0) {    // lineup builder

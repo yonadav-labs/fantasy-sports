@@ -102,7 +102,8 @@ def build_lineup(request):
             if ii['player'] == pid:
                 ii['player'] = ''
     elif pid == 'optimize':         # manual optimize
-        players = Player.objects.filter(play_today=True, data_source=ds)
+        ids = request.POST.get('ids').split('&ids=')[1:]
+        players = Player.objects.filter(id__in=ids)
         num_lineups = 1
         locked = [int(ii['player']) for ii in lineup if ii['player']]
         lineups = calc_lineups(players, num_lineups, locked, ds, cus_proj)
@@ -169,6 +170,9 @@ def build_lineup(request):
 def get_players(request):
     ds = request.POST.get('ds')
     order = request.POST.get('order', 'proj_points')
+    if order == '-':
+        order = 'proj_points'
+
     teams = request.POST.get('games').strip(';').replace(';', '-').split('-')
 
     factor = 1 if ds == 'Yahoo' else 1000
