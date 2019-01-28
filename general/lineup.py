@@ -30,10 +30,10 @@ class Roster:
     def spent(self):
         return sum(map(lambda x: x.salary, self.players))
 
-    def projected(self):
+    def projected(self, gross=False):
         lst = map(lambda x: x.proj_points, self.players)
         res = sum(lst)
-        if self.ds == 'FanDuel':
+        if self.ds == 'FanDuel' and not gross:
             drop = min(lst)
             for ii in self.players:
                 if ii.proj_points == drop:
@@ -220,7 +220,7 @@ def calc_lineups(players, num_lineups, locked, ds, cus_proj):
 
     while True:
         roster = get_lineup(ds, players, teams, locked, max_point, con_mul)
-        max_point = roster.projected() - 0.001
+        max_point = roster.projected(gross=True) - 0.001
 
         if not roster:
             break
