@@ -59,22 +59,20 @@ def get_players(data_source):
     
                 Player.objects.create(**defaults)
             else:
-                if not player.lock_update:
+                if player.lock_update:
+                    player.play_today = True
+                else:
                     criteria = datetime.datetime.combine(datetime.date.today(), datetime.time(22, 30, 0)) # utc time - 5:30 pm EST
                     if player.updated_at.replace(tzinfo=None) < criteria:
                         defaults['proj_points'] = _deviation_projection(ii['proj_points'], ii['salary'], data_source)
 
                     for attr, value in defaults.items():
                         setattr(player, attr, value)
-                    player.save()
+                player.save()
     except:
         print("*** some thing is wrong ***")
 
 if __name__ == "__main__":
     Player.objects.all().update(play_today=False)
-    for ds in DATA_SOURCE:
-        get_players(ds[0])
-
-    # sync FanDuel and Yahoo projection
-    for player in Player.objects.filter(data_source='FanDuel'):
-        Player.objects.filter(uid=player.uid, data_source='Yahoo').update(proj_points=player.proj_points)
+    for ds in ['DraftKings', 'Yahoo', 'FanDuel']:
+        get_players(ds)
