@@ -231,9 +231,7 @@ def calc_lineups(players, num_lineups, locked, ds, cus_proj):
                 break
 
     if ds == 'FanDuel':
-        _result = []
-        for ii in result:
-            _result.append({ "roster": ii, "proj": ii.projected() })
-        players = sorted(_result, key=lambda k: k["proj"], reverse=True)
+        _result = [{ "roster": ii, "proj": ii.projected() } for ii in result]
+        _result = sorted(_result, key=lambda k: k["proj"], reverse=True)
         result = [ii["roster"] for ii in _result]
     return result
