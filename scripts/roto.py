@@ -73,3 +73,7 @@ if __name__ == "__main__":
     Player.objects.all().update(play_today=False)
     for ds in DATA_SOURCE:
         get_players(ds[0])
+
+    # sync FanDuel and Yahoo projection
+    for player in Player.objects.filter(data_source='FanDuel'):
+        Player.objects.filter(uid=player.uid, data_source='Yahoo').update(proj_points=player.proj_points)
