@@ -59,13 +59,14 @@ def get_players(data_source):
     
                 Player.objects.create(**defaults)
             else:
-                criteria = datetime.datetime.combine(datetime.date.today(), datetime.time(22, 30, 0)) # utc time - 5:30 pm EST
-                if player.updated_at.replace(tzinfo=None) < criteria:
-                    defaults['proj_points'] = _deviation_projection(ii['proj_points'], ii['salary'], data_source)
+                if not player.lock_update:
+                    criteria = datetime.datetime.combine(datetime.date.today(), datetime.time(22, 30, 0)) # utc time - 5:30 pm EST
+                    if player.updated_at.replace(tzinfo=None) < criteria:
+                        defaults['proj_points'] = _deviation_projection(ii['proj_points'], ii['salary'], data_source)
 
-                for attr, value in defaults.items():
-                    setattr(player, attr, value)
-                player.save()
+                    for attr, value in defaults.items():
+                        setattr(player, attr, value)
+                    player.save()
     except:
         print("*** some thing is wrong ***")
 
