@@ -38,3 +38,7 @@ def cus_proj_(player, session):
         cus_proj = session.get('cus_proj', {})
         return cus_proj.get(str(player.id), player.proj_points)
     return ''
+
+@register.filter
+def check_drop(name, drop):
+    return 'text-danger' if drop == name else ''

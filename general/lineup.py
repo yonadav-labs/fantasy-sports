@@ -12,8 +12,10 @@ class Roster:
         "C": 4
     }
 
-    def __init__(self):
+    def __init__(self, ds):
         self.players = []
+        self.ds = ds
+        self.drop = None
 
     def add_player(self, player):
         self.players.append(player)
@@ -29,7 +31,16 @@ class Roster:
         return sum(map(lambda x: x.salary, self.players))
 
     def projected(self):
-        return sum(map(lambda x: x.proj_points, self.players))
+        lst = map(lambda x: x.proj_points, self.players)
+        res = sum(lst)
+        if self.ds == 'FanDuel':
+            drop = min(lst)
+            for ii in self.players:
+                if ii.proj_points == drop:
+                    self.drop = str(ii)
+                    break
+            res = res - drop
+        return res
 
     def position_order(self, player):
         return self.POSITION_ORDER[player.position]
@@ -37,15 +48,15 @@ class Roster:
     def sorted_players(self):
         return sorted(self.players, key=self.position_order)
 
-    def get_roster_players(self, ds):
-        if ds == 'FanDuel': 
+    def get_roster_players(self):
+        if self.ds == 'FanDuel': 
             return self.sorted_players()
         else:
             pos = {
                 'DraftKings': ['PG', 'SG', 'SF', 'PF', 'C', 'PG,SG', 'SF,PF'],
                 'Yahoo': ['PG', 'SG', 'PG,SG', 'SF', 'PF', 'SF,PF', 'C'],
             }
-            pos = pos[ds]
+            pos = pos[self.ds]
             players = list(self.players)
             players_ = []
 
@@ -175,7 +186,7 @@ def get_lineup(ds, players, teams, locked, max_point, con_mul):
     solution = solver.Solve()
 
     if solution == solver.OPTIMAL:
-        roster = Roster()
+        roster = Roster(ds)
 
         for i, player in enumerate(players):
             if variables[i].solution_value() == 1:
@@ -219,4 +230,10 @@ def calc_lineups(players, num_lineups, locked, ds, cus_proj):
             if len(result) == num_lineups:
                 break
 
+    if ds == 'FanDuel':
+        _result = []
+        for ii in result:
+            _result.append({ "roster": ii, "proj": ii.projected() })
+        players = sorted(_result, key=lambda k: k["proj"], reverse=True)
+        result = [ii["roster"] for ii in _result]
     return result

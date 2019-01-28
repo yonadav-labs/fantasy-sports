@@ -108,7 +108,7 @@ def build_lineup(request):
         locked = [int(ii['player']) for ii in lineup if ii['player']]
         lineups = calc_lineups(players, num_lineups, locked, ds, cus_proj)
         if lineups:
-            roster = lineups[0].get_roster_players(ds)
+            roster = lineups[0].get_roster_players()
             lineup = [{ 'pos':ii, 'player': str(roster[idx].id) } for idx, ii in enumerate(CSV_FIELDS[ds])]
             request.session[key] = lineup
         else:
@@ -290,7 +290,7 @@ def gen_lineups(request):
     ds = request.POST.get('ds')
     header = CSV_FIELDS[ds] + ['Spent', 'Projected']
     
-    rows = [[str(jj) for jj in ii.get_roster_players(ds)]+[int(ii.spent()), ii.projected()]
+    rows = [[[str(jj) for jj in ii.get_roster_players()]+[int(ii.spent()), ii.projected()], ii.drop]
             for ii in lineups]
 
     result = {
@@ -341,7 +341,7 @@ def export_lineups(request):
     with open(path, 'w') as f:
         f.write(','.join(csv_fields)+'\n')
         for ii in lineups:
-            f.write(','.join([_get_export_cell(jj, ds) for jj in ii.get_roster_players(ds)])+'\n')
+            f.write(','.join([_get_export_cell(jj, ds) for jj in ii.get_roster_players()])+'\n')
     
     wrapper = FileWrapper( open( path, "r" ) )
     content_type = mimetypes.guess_type( path )[0]
