@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 DATA_SOURCE = (
     ('DraftKings', 'DraftKings'),
@@ -95,6 +97,12 @@ class Player(models.Model):
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
+
+
+@receiver(post_save, sender=Player, dispatch_uid="sync_fanduel_proj")
+def sync_proj(sender, instance, **kwargs):
+    if instance.data_source == 'FanDuel':
+        Player.objects.filter(uid=instance.uid, data_source='Yahoo').update(proj_points=instance.proj_points)
 
 
 class FavPlayer(models.Model):
