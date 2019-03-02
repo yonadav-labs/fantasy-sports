@@ -13,12 +13,14 @@
         <div class="slate pl-3 pt-1 mb-2">
           {% for game in games %}
             <div class="slate-item">
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" checked="" value="{{ game.home_team }}-{{ game.visit_team }}">{{ game.visit_team }} @ {{ game.home_team }}
-                </label>
-              </div>
-              <div class="ml-4 text-secondary">( {{ game.date|date:"H:i" }} )</div>
+              <label class="form-check-label">
+                <div class="game-item text-center float-left mr-2" data-game="{{ game.id }}">
+                  <input type="checkbox" class="form-check-input" checked="" value="{{ game.home_team }}-{{ game.visit_team }}">
+                  <div class="">{{ game.visit_team }} {{ game|ou_ml:game.visit_team }}</div>
+                  <div class="time">@ ( {{ game.date|date:"H:i" }} )</div>
+                  <div class="">{{ game.home_team }} {{ game|ou_ml:game.home_team }}</div>
+                </div>
+              </label>
             </div>
           {% endfor %}
         </div>

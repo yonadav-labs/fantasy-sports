@@ -44,35 +44,37 @@ def get_players(data_source):
                   'salary', 'salary_custom', 'salary_original', 'team', 'team_points', 'value']
 
         print data_source, len(players)
-        for ii in players:
-            defaults = { key: str(ii[key]).replace(',', '') for key in fields }
-            defaults['play_today'] = True
-            defaults['injury'] = html2text.html2text(ii['injury']).strip()
+        if len(players) > 20:
+            Player.objects.filter(data_source=data_source).update(play_today=False)
 
-            player = Player.objects.filter(uid=ii['id'], data_source=data_source).first()
-            if not player:
-                defaults['uid'] = ii['id']
-                defaults['data_source'] = data_source
-                defaults['proj_points'] = _deviation_projection(ii['proj_points'], ii['salary'], data_source)
-                defaults['first_name'] = ii['first_name'].replace('.', '')
-                defaults['last_name'] = ii['last_name'].replace('.', '')
-    
-                Player.objects.create(**defaults)
-            else:
-                if player.lock_update:
-                    player.play_today = True
+            for ii in players:
+                defaults = { key: str(ii[key]).replace(',', '') for key in fields }
+                defaults['play_today'] = True
+                defaults['injury'] = html2text.html2text(ii['injury']).strip()
+
+                player = Player.objects.filter(uid=ii['id'], data_source=data_source).first()
+                if not player:
+                    defaults['uid'] = ii['id']
+                    defaults['data_source'] = data_source
+                    defaults['proj_points'] = _deviation_projection(ii['proj_points'], ii['salary'], data_source)
+                    defaults['first_name'] = ii['first_name'].replace('.', '')
+                    defaults['last_name'] = ii['last_name'].replace('.', '')
+        
+                    Player.objects.create(**defaults)
                 else:
-                    criteria = datetime.datetime.combine(datetime.date.today(), datetime.time(22, 30, 0)) # utc time - 5:30 pm EST
-                    if player.updated_at.replace(tzinfo=None) < criteria:
-                        defaults['proj_points'] = _deviation_projection(ii['proj_points'], ii['salary'], data_source)
+                    if player.lock_update:
+                        player.play_today = True
+                    else:
+                        criteria = datetime.datetime.combine(datetime.date.today(), datetime.time(22, 30, 0)) # utc time - 5:30 pm EST
+                        if player.updated_at.replace(tzinfo=None) < criteria:
+                            defaults['proj_points'] = _deviation_projection(ii['proj_points'], ii['salary'], data_source)
 
-                    for attr, value in defaults.items():
-                        setattr(player, attr, value)
-                player.save()
+                        for attr, value in defaults.items():
+                            setattr(player, attr, value)
+                    player.save()
     except:
         print("*** some thing is wrong ***")
 
 if __name__ == "__main__":
-    Player.objects.all().update(play_today=False)
     for ds in ['DraftKings', 'Yahoo', 'FanDuel']:
         get_players(ds)

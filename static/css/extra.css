@@ -424,6 +424,11 @@ td.break {
     margin-bottom: 8px;
 }
 
+.game-item .form-check-input {
+    margin-top: 22px;
+    margin-left: -50px;
+}
+
 .game-item.active {
     color: white;
     font-weight: 700;
