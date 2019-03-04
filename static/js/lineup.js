@@ -11,7 +11,7 @@ $(function() {
   $('.nav-tabs.ds .nav-link').click(function () {
     ds = $(this).text();
     $('#ds').val(ds);
-    getPlayers();
+    getGames();
     // remove locked and clear search
     $('input[name=locked]').remove();
     $("#search-player").val('');
@@ -183,6 +183,18 @@ function change_point (obj, clear) {
 
 function clear_proj (obj) {
   change_point($(obj).prev(), -1);
+}
+
+function getGames() {
+  $.post( "/get-slates", 
+    { 
+      ds: ds
+    }, 
+    function( data ) {
+      $( "div.slate" ).html( data );
+      getPlayers();
+    }
+  );
 }
 
 function getPlayers (order) {

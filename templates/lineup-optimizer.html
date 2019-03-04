@@ -11,18 +11,6 @@
         <a class="float-right mr-2" style="margin-top: -46px;" href="/lineup-builder">lineup builder</a>
         <h6 class="text-success">- Game Slates</h6>
         <div class="slate pl-3 pt-1 mb-2">
-          {% for game in games %}
-            <div class="slate-item">
-              <label class="form-check-label">
-                <div class="game-item text-center float-left mr-2" data-game="{{ game.id }}">
-                  <input type="checkbox" class="form-check-input" checked="" value="{{ game.home_team }}-{{ game.visit_team }}">
-                  <div class="">{{ game.visit_team }} {{ game|ou_ml:game.visit_team }}</div>
-                  <div class="time">@ ( {{ game.date|date:"H:i" }} )</div>
-                  <div class="">{{ game.home_team }} {{ game|ou_ml:game.home_team }}</div>
-                </div>
-              </label>
-            </div>
-          {% endfor %}
         </div>
       </div>
       <input type="hidden" name="ds" id="ds">

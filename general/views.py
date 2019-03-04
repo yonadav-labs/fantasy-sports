@@ -30,26 +30,19 @@ CSV_FIELDS = {
 }
 
 
-def _get_game_today(ds='FanDuel'):
-    return Game.objects.filter(data_source=ds)
-
-
 def players(request):
     players = Player.objects.filter(data_source='FanDuel').order_by('first_name')
     return render(request, 'players.html', locals())
-
 
 @xframe_options_exempt
 def lineup_builder(request):
     data_sources = DATA_SOURCE
     num_lineups = request.session.get('DraftKings_num_lineups', 1)
-    games = _get_game_today()
     return render(request, 'lineup-builder.html', locals())
 
 @xframe_options_exempt
 def lineup_optimizer(request):
     data_sources = DATA_SOURCE
-    games = _get_game_today()
     return render(request, 'lineup-optimizer.html', locals())
 
 def _is_full_lineup(lineup, ds):
@@ -415,3 +408,9 @@ def trigger_scraper(request):
 
 def go_dfs(request):
     return render(request, 'go-dfs.html')
+
+@csrf_exempt
+def get_slates(request):
+    ds = request.POST.get('ds')
+    games = Game.objects.filter(data_source=ds)
+    return render(request, 'game-slates.html', locals())

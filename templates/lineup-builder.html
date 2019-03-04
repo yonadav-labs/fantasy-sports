@@ -11,16 +11,6 @@
         <a class="float-right mr-2" style="margin-top: -44px;" href="/lineup-optimizer">lineup optimizer</a>
         <h6 class="text-success">- Game Slates</h6>
         <div class="slate pl-3 pt-1 mb-2">
-          {% for game in games %}
-            <div class="slate-item">
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" checked="" value="{{ game.home_team }}-{{ game.visit_team }}">{{ game.visit_team }} @ {{ game.home_team }}
-                </label>
-              </div>
-              <div class="ml-4 text-secondary">( {{ game.date|date:"H:i" }} )</div>
-            </div>
-          {% endfor %}
         </div>
       </div>
       <input type="hidden" name="ds" id="ds">

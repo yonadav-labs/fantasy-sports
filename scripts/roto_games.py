@@ -11,6 +11,7 @@ django.setup()
 
 from general.models import *
 from general.views import *
+from general import html2text
 
 def get_games(data_source):
     slate = 'Main' if data_source == 'FanDuel' else 'all'
@@ -29,6 +30,8 @@ def get_games(data_source):
             defaults['date'] = datetime.datetime.combine(datetime.date.today(), defaults['date'].time())
             defaults['ou'] = float(ii['ou']) if ii['ou'] else 0
             defaults['data_source'] = data_source
+            defaults['home_score'] = html2text.html2text(ii['home_score']).strip()
+            defaults['visit_score'] = html2text.html2text(ii['visit_score']).strip()
             Game.objects.create(**defaults)
 
 if __name__ == "__main__":

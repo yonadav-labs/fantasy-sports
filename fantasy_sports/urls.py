@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^export_lineups', export_lineups, name="export_lineups"),
     url(r'^export-mlineup', export_manual_lineup, name="export_manual_lineup"),
     url(r'^get-players', get_players, name="get_players"),
+    url(r'^get-slates', get_slates, name="get_slates"),
     url(r'^go-dfs', go_dfs, name="go_dfs"),
     url(r'^tool', put_ids, name="put_ids"),
     url(r'^trigger-scraper', trigger_scraper, name="trigger_scraper"),
