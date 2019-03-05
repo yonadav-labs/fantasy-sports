@@ -3,7 +3,7 @@ var ds = 'DraftKings',
 
 $(function() {
   // when change slate
-  $('.slate input').on('change', function() {   // game slates checkbox
+  $('body').change('.slate input', function() {   // game slates checkbox
     getPlayers('-');
   });
 
