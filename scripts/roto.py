@@ -12,6 +12,7 @@ django.setup()
 
 from general.models import *
 from general import html2text
+from scripts.get_slate import get_slate
 
 def _deviation_projection(val, salary, ds):
     TC = {
@@ -32,8 +33,10 @@ def _deviation_projection(val, salary, ds):
 
 def get_players(data_source):
     try:
+        slate = get_slate(data_source)
         url = 'https://www.rotowire.com/daily/tables/optimizer-nba.php?sport=NBA&' + \
-              'site={}&projections=&type=main&slate=all'.format(data_source)
+              'site={}&projections=&type=main&slate={}'.format(data_source, slate)
+        print (url)
 
         players = requests.get(url).json()
 
