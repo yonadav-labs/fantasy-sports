@@ -2,11 +2,21 @@
 <table class="table table-hover table-responsive-sm">
   <thead>
     <tr>
+      <th colspan="3" class="text-center">Player</th>
+      <th colspan="3"></th>
+      <th colspan="2" class="text-center">Exposure <i class="fas fa-cog text-muted ml-1" onclick="setExposure();"></i></th>
+    </tr>
+    <tr>
       <th><input type="checkbox" id="chk-all" checked="" onclick="choose_all(this)"></th>
-      <th colspan="2">Player</th>
-      <th class="text-right sort-col" data-order="salary">Salary <i class="fas fa-sort-amount-down {% if order != 'salary' %} d-none {% endif %}"></i></th>
-      <th class="sort-col" data-order="proj_points">Projections <i class="fas fa-sort-amount-down {% if order != 'proj_points' %} d-none {% endif %}"></i></th>
-      <th class="sort-col" data-order="pt_sal" colspan="2">PT/Sal <i class="fas fa-sort-amount-down {% if order != 'pt_sal' %} d-none {% endif %}"></i></th>
+      <th class="sort-col" data-order="actual_position" data-bidirection="true"><span class="pl-2" title="Position">Pos</span></th>
+      <th>
+        <span class="pl-0 sort-col" data-order="team" data-bidirection="true" title="Team">Tm</span>
+      </th>
+      <th class="text-center px-0 sort-col" data-order="salary">Salary <i class="fas fa-sort-amount-down {% if order != 'salary' %} d-none {% endif %}"></i></th>
+      <th class="text-center px-0 sort-col" data-order="proj_points">Proj <i class="fas fa-sort-amount-down {% if order != 'proj_points' %} d-none {% endif %}"></i></th>
+      <th class="text-center px-0 sort-col" data-order="pt_sal">PT/Sal <i class="fas fa-sort-amount-down {% if order != 'pt_sal' %} d-none {% endif %}"></i></th>
+      <th class="text-center px-0">Min %</th>
+      <th class="pl-3" colspan="2">Max %</th>
     </tr>
   </thead>
   <tbody>
@@ -16,7 +26,7 @@
         <td style="cursor: pointer;" onclick="pr_click(this)">
           <img src="{{ ii.avatar }}" height="30" class="mr-2"> {{ ii.actual_position }}
         </td>
-        <td>
+        <td class="pl-2 pr-0">
           <a href="#/players/{{ ii.id }}">
             <div>
               <span>{{ ii.first_name }} {{ ii.last_name }}</span>
@@ -24,7 +34,7 @@
                 <span class="text-danger font-weight-bold ml-3">{{ ii.injury }}</span>
               {% endif %}
             </div>
-            <div class="sub">{{ ii.team }}</div>
+            <div class="sub">{{ ii.team }} {{ ii.handedness }} {% if ii.start and ii.start != '-' %}{{ ii.start }}{% endif %} {% if ii.start and not ii.start_status %}<i class="fas fa-check text-success"></i>{% endif %}</div>
           </a>
         </td>
         <td class="text-right pr-3">{% if ds != 'Yahoo' %}${% endif %}{{ ii.salary|floatformat:0 }}</td>
@@ -33,6 +43,12 @@
           <i class="fas fa-times" onclick="clear_proj(this);"></i>
         </td>
         <td class="pt-sal">{{ ii.pt_sal|floatformat:1 }}</td>
+        <td class="pl-3">
+          <input type="number" min="0" max="100" class="form-control min-exp d-inline text-right pl-0 pr-1 _wu48jf" data-id="{{ ii.id }}" value="0" name="min_xp_{{ ii.id }}">
+        </td>
+        <td class="pl-3">
+          <input type="number" min="0" max="100" class="form-control max-exp d-inline text-right pl-0 pr-1 _wu48jf" data-id="{{ ii.id }}" value="30" name="max_xp_{{ ii.id }}">
+        </td>
         <td>
           <i class="fas fa-lock-open fa-md lock unlocked plb-{{ ii.id }}" onclick="toggleLock(this, {{ ii.id }});"></i>
         </td>

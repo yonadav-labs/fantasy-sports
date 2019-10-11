@@ -69,6 +69,24 @@ $(function() {
     });
   }
 
+  setExposure = function () {
+    $('#dlg-exposure').modal();
+  }
+
+  $('.btn-set-exp').click(function(e) {
+    if (e) {
+      e.preventDefault();
+    }
+    min_ex = $('#global-min-exp').val() * 1;
+    max_ex = $('#global-max-exp').val() * 1;
+    if (min_ex > max_ex) {
+      $('#exp_error').removeClass('d-none');
+      return false;
+    }
+    $('#div-players .min-exp').val(min_ex);
+    $('#div-players .max-exp').val(max_ex);
+  });
+
   // filter players
   $("#search-player").on("keyup", function() {
     filterTable();
