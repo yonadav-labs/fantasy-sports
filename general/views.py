@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
+import math
 import json
 import mimetypes
 import datetime
@@ -244,17 +245,45 @@ def mean(numbers):
 
 
 def _get_lineups(request):
-    ids = request.POST.getlist('ids')
-    locked = request.POST.getlist('locked')
-    num_lineups = min(int(request.POST.get('num-lineups')), 150)
-    ds = request.POST.get('ds')
+    params = request.POST
+
+    ids = params.getlist('ids')
+    locked = params.getlist('locked')
+    num_lineups = min(int(params.get('num-lineups', 1)), 150)
+    ds = params.get('ds', 'DraftKings')
+    exposure = params.get('exposure')
 
     ids = [int(ii) for ii in ids]
     locked = [int(ii) for ii in locked]
 
-    players = Player.objects.filter(id__in=ids)
     cus_proj = request.session.get('cus_proj', {})
-    lineups = calc_lineups(players, num_lineups, locked, ds, cus_proj)
+    players = Player.objects.filter(id__in=ids)
+
+    # get exposure for each valid player
+    _exposure = []
+
+    for ii in players:
+        if ii.id in locked:
+            _exposure.append({ 'min': num_lineups, 'max': num_lineups, 'id': ii.id })
+        else:
+            _exposure.append({
+                'min': int(math.ceil(float(params.get('min_xp_{}'.format(ii.id), 0)) * num_lineups / 100)),
+                'max': int(math.floor(float(params.get('max_xp_{}'.format(ii.id), 0)) * num_lineups / 100)),
+                'id': ii.id
+            })
+
+    # check validity of exposure for minimal
+    while True:
+        possible_players = 0
+        for ii in _exposure:
+            possible_players += ii['max']
+        if possible_players < ROSTER_SIZE[ds] * num_lineups:
+            for ii in _exposure:
+                ii['max'] = ii['max'] + 1
+        else:
+            break
+
+    lineups = calc_lineups(players, num_lineups, locked, ds, _exposure, cus_proj)
     return lineups, players
 
 

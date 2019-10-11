@@ -205,6 +205,18 @@ def post_process(result, ds):
     return result
 
 
+def get_num_lineups(player, lineups):
+    num = 0
+    for ii in lineups:
+        if ii.is_member(player):
+            num = num + 1
+    return num
+
+
+def get_exposure(players, lineups):
+    return { ii.id: get_num_lineups(ii, lineups) for ii in players }
+
+
 def calc_lineups(players, num_lineups, locked, ds, exposure, cus_proj):
 
     result = []
@@ -252,13 +264,13 @@ def calc_lineups(players, num_lineups, locked, ds, exposure, cus_proj):
                 roster = get_lineup(ds, players, teams, locked+_locked, ban+_ban, max_point, con_mul)
 
                 if not roster:
-                    return post_process(_result)
+                    return post_process(_result, ds)
 
                 max_point = roster.projected(gross=True) - 0.001
                 if roster.get_num_teams() >= TEAM_LIMIT[ds]:
                     result.append(roster)
                     if len(result) == num_lineups:
-                        return post_process(result)
+                        return post_process(result, ds)
 
     # for max exposure -> focus on getting optimized lineups
     while True:
@@ -270,10 +282,10 @@ def calc_lineups(players, num_lineups, locked, ds, exposure, cus_proj):
         roster = get_lineup(ds, players, teams, locked, ban, max_point, con_mul)
 
         if not roster:
-            return post_process(result)
+            return post_process(result, ds)
 
         max_point = roster.projected(gross=True) - 0.001
         if roster.get_num_teams() >= TEAM_LIMIT[ds]:
             result.append(roster)
             if len(result) == num_lineups:
-                return post_process(result)
+                return post_process(result, ds)
