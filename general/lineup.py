@@ -128,7 +128,7 @@ TEAM_MEMEBER_LIMIT = {
     'DraftKings': 8
 }
 
-def get_lineup(ds, players, teams, locked, max_point, con_mul):
+def get_lineup(ds, players, teams, locked, ban, max_point, con_mul):
     solver = pywraplp.Solver('nba-lineup', pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
 
     variables = []
@@ -136,7 +136,9 @@ def get_lineup(ds, players, teams, locked, max_point, con_mul):
     for i, player in enumerate(players):
         if player.id in locked and ds != 'DraftKings':
             variables.append(solver.IntVar(1, 1, str(player)+str(i)))
-        else:        
+        elif player.id in ban:
+            variables.append(solver.IntVar(0, 0, str(player)+str(i)))
+        else:
             variables.append(solver.IntVar(0, 1, str(player)+str(i)))
 
     objective = solver.Objective()
@@ -195,15 +197,25 @@ def get_lineup(ds, players, teams, locked, max_point, con_mul):
         return roster
 
 
-def calc_lineups(players, num_lineups, locked, ds, cus_proj):
+def post_process(result, ds):
+    if ds == 'FanDuel': # due to min drop rule
+        _result = [{ "roster": ii, "proj": ii.projected() } for ii in result]
+        _result = sorted(_result, key=lambda k: k["proj"], reverse=True)
+        result = [ii["roster"] for ii in _result]
+    return result
+
+
+def calc_lineups(players, num_lineups, locked, ds, exposure, cus_proj):
+
     result = []
 
     max_point = 10000
+    exposure_d = { ii['id']: ii for ii in exposure }
     teams = set([ii.team for ii in players])
-
     con_mul = []
     players_ = []
     idx = 0
+
     for ii in players:
         p = vars(ii)
         p.pop('_state')
@@ -218,20 +230,50 @@ def calc_lineups(players, num_lineups, locked, ds, cus_proj):
         con_mul.append(ci_)
     players = players_
 
+    ban = []
+    _ban = []   # temp ban
+
+ # for min exposure
+    for ii in exposure:
+        if ii['min']:
+            _locked = [ii['id']]
+            while True:
+                # check and update all users' status
+                cur_exps = get_exposure(players, result)
+                for pid, exp in cur_exps.items():
+                    if exp >= exposure_d[pid]['max'] and pid not in ban:
+                        ban.append(pid)
+                    elif exp >= exposure_d[pid]['min'] > 0 and pid not in _ban:
+                        _ban.append(pid)
+
+                if cur_exps[ii['id']] >= ii['min']:
+                    break
+                    
+                roster = get_lineup(ds, players, teams, locked+_locked, ban+_ban, max_point, con_mul)
+
+                if not roster:
+                    return post_process(_result)
+
+                max_point = roster.projected(gross=True) - 0.001
+                if roster.get_num_teams() >= TEAM_LIMIT[ds]:
+                    result.append(roster)
+                    if len(result) == num_lineups:
+                        return post_process(result)
+
+    # for max exposure -> focus on getting optimized lineups
     while True:
-        roster = get_lineup(ds, players, teams, locked, max_point, con_mul)
-        max_point = roster.projected(gross=True) - 0.001
+        cur_exps = get_exposure(players, result)
+        for pid, exp in cur_exps.items():
+            if exp >= exposure_d[pid]['max'] and pid not in ban:
+                ban.append(pid)
+
+        roster = get_lineup(ds, players, teams, locked, ban, max_point, con_mul)
 
         if not roster:
-            break
-        
+            return post_process(result)
+
+        max_point = roster.projected(gross=True) - 0.001
         if roster.get_num_teams() >= TEAM_LIMIT[ds]:
             result.append(roster)
             if len(result) == num_lineups:
-                break
-
-    if ds == 'FanDuel':
-        _result = [{ "roster": ii, "proj": ii.projected() } for ii in result]
-        _result = sorted(_result, key=lambda k: k["proj"], reverse=True)
-        result = [ii["roster"] for ii in _result]
-    return result
+                return post_process(result)
