@@ -2,6 +2,16 @@ html {
     font-size: 92%;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance:textfield;
+}
+
 @media (min-device-width: 1600px) {
     html {
         font-size: 100%;
@@ -322,8 +332,7 @@ table th {
 }
 
 .num-lineups {
-    width: 70px !important;
-    text-align: right;
+    width: 60px !important;
     padding: .375rem .75rem;
     font-size: 1rem;
     line-height: 1.2;
