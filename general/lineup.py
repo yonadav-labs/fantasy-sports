@@ -30,7 +30,7 @@ class Roster:
     def spent(self):
         return sum(map(lambda x: x.salary, self.players))
 
-    def projected(self, gross=False):
+    def projected(self, gross=True):
         lst = map(lambda x: x.proj_points, self.players)
         res = sum(lst)
         if self.ds == 'FanDuel' and not gross:
