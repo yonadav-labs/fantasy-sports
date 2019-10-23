@@ -96,11 +96,16 @@ def build_lineup(request):
             if ii['player'] == pid:
                 ii['player'] = ''
     elif pid == 'optimize':         # manual optimize
-        ids = request.POST.get('ids').split('&ids=')[1:]
+        ids = request.POST.get('ids').split('&')
+        ids = [ii[4:] for ii in ids if 'ids=' in ii]
+
         players = Player.objects.filter(id__in=ids)
         num_lineups = 1
         locked = [int(ii['player']) for ii in lineup if ii['player']]
-        lineups = calc_lineups(players, num_lineups, locked, ds, cus_proj)
+
+        _exposure = [{ 'min': 0, 'max': 1, 'id': ii.id } for ii in players]
+        lineups = calc_lineups(players, num_lineups, locked, ds, _exposure, cus_proj)
+
         if lineups:
             roster = lineups[0].get_roster_players()
             lineup = [{ 'pos':ii, 'player': str(roster[idx].id) } for idx, ii in enumerate(CSV_FIELDS[ds])]
