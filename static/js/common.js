@@ -10,6 +10,6 @@ if(inIframe()) {
 } else {
     $('.container-fluid').remove();
     // $('body').toggleClass('d-none');
-    $('.lineups-container').toggleClass('container');
-    $('.lineups-container').toggleClass('container-iframe');
+    // $('.lineups-container').toggleClass('container');
+    // $('.lineups-container').toggleClass('container-iframe');
 }

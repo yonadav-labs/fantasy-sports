@@ -46,7 +46,7 @@ def get_players(data_source):
                   'proj_site', 'proj_third_party_one', 'proj_third_party_two', 'actual_position', 
                   'salary', 'salary_custom', 'salary_original', 'team', 'team_points', 'value']
 
-        print data_source, len(players)
+        print (data_source, len(players))
         if len(players) > 20:
             Player.objects.filter(data_source=data_source).update(play_today=False)
 

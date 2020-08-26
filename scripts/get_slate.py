@@ -1,4 +1,4 @@
-import urllib2
+import requests
 
 from bs4 import BeautifulSoup
 
@@ -6,8 +6,7 @@ def get_slate(ds):
     slate = 'all'
     try:
         url = 'https://www.rotowire.com/daily/nba/optimizer.php?site={}'.format(ds)
-        response = urllib2.urlopen(url)
-        r = response.read()
+        r = requests.get(url).text
 
         soup = BeautifulSoup(r, "html.parser")
         body = soup.find('body')

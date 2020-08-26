@@ -181,9 +181,17 @@ def get_players(request):
 
     for ii in Player.objects.filter(data_source=ds, team__in=teams, play_today=True):
         player = model_to_dict(ii, fields=['id', 'injury', 'avatar', 'salary', 'team',
-                                           'actual_position', 'first_name', 'last_name'])
+                                           'actual_position', 'first_name', 'last_name',
+                                           'opponent'])
         player['proj_points'] = float(cus_proj.get(str(ii.id), ii.proj_points))
         player['pt_sal'] = player['proj_points'] * factor / ii.salary if ii.salary else 0
+
+        if player['opponent'].startswith('@'):
+            player['opponent'] = '@ '+player['opponent'][1:]
+        else:
+            player['opponent'] = 'vs '+player['opponent']
+
+
         players.append(player)
 
     players = sorted(players, key=lambda k: k[order], reverse=True)
@@ -359,6 +367,8 @@ def _get_export_cell(player, ds):
     else:
         return player.rid or str(player) + ' - No ID'
 
+
+@csrf_exempt
 def export_lineups(request):
     lineups, _ = _get_lineups(request)
     ds = request.POST.get('ds')
@@ -376,9 +386,11 @@ def export_lineups(request):
     response = HttpResponse(wrapper, content_type = content_type)
     response['Content-Length'] = os.path.getsize( path )
     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str( os.path.basename( path ) )
+
     return response
 
 
+@csrf_exempt
 def export_manual_lineup(request):
     ds = request.session.get('ds')
     lidx = request.GET.getlist('lidx')
@@ -399,6 +411,7 @@ def export_manual_lineup(request):
     response = HttpResponse(wrapper, content_type = content_type)
     response['Content-Length'] = os.path.getsize( path )
     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str( os.path.basename( path ) )
+
     return response
 
 

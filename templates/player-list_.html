@@ -34,7 +34,7 @@
                 <span class="text-danger font-weight-bold ml-3">{{ ii.injury }}</span>
               {% endif %}
             </div>
-            <div class="sub">{{ ii.team }} {{ ii.handedness }} {% if ii.start and ii.start != '-' %}{{ ii.start }}{% endif %} {% if ii.start and not ii.start_status %}<i class="fas fa-check text-success"></i>{% endif %}</div>
+            <div class="sub">{{ ii.team }} {{ ii.opponent }} {{ ii.handedness }} {% if ii.start and ii.start != '-' %}{{ ii.start }}{% endif %} {% if ii.start and not ii.start_status %}<i class="fas fa-check text-success"></i>{% endif %}</div>
           </a>
         </td>
         <td class="text-right pr-3">{% if ds != 'Yahoo' %}${% endif %}{{ ii.salary|floatformat:0 }}</td>
@@ -47,7 +47,7 @@
           <input type="number" min="0" max="100" class="form-control min-exp d-inline text-center px-0 _wu48jf" data-id="{{ ii.id }}" value="0" name="min_xp_{{ ii.id }}">
         </td>
         <td class="pr-0 pl-1">
-          <input type="number" min="0" max="100" class="form-control max-exp d-inline text-center px-0 _wu48jf" data-id="{{ ii.id }}" value="30" name="max_xp_{{ ii.id }}">
+          <input type="number" min="0" max="100" class="form-control max-exp d-inline text-center px-0 _wu48jf" data-id="{{ ii.id }}" value="100" name="max_xp_{{ ii.id }}">
         </td>
         <td>
           <i class="fas fa-lock-open fa-md lock unlocked plb-{{ ii.id }}" onclick="toggleLock(this, {{ ii.id }});"></i>
