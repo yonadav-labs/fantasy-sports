@@ -3,7 +3,6 @@
 *.sqlite3
 env/
 nohup.out
-migrations
 static/media
 settings.py
 static/icons
