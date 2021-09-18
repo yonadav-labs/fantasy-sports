@@ -6,12 +6,13 @@
   <form id="frm-player" action="/export_lineups" method="POST">
     {% csrf_token %}
     <div class="row">
-      <div class="col-md-12 mb-4">
+      <div class="col-md-12">
         <h5 class="mb-4">Lineup Builder</h5>
         <a class="float-right mr-2" style="margin-top: -44px;" href="/lineup-optimizer">lineup optimizer</a>
-        <h6 class="text-success">- Game Slates</h6>
-        <div class="slate pl-3 pt-1 mb-2">
-        </div>
+        <h6 class="text-success float-left pt-2">- Game Slates: </h6>
+        <div class="slates float-left ml-3"></div>
+        <div class="clearfix"></div>
+        <div class="games mb-2 mt-4 pl-2"></div>
       </div>
       <input type="hidden" name="ds" id="ds">
       <div class="col-md-7 mb-4 pr-md-2">

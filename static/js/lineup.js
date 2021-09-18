@@ -1,17 +1,22 @@
 var ds = 'DraftKings',
+    slate_id = '',
     bid = '';
 
 $(function() {
   // when change slate
-  $('body').on('change', '.slate input', function() {   // game slates checkbox
+  $('body').on('change', '.games input', function() {   // game checkbox
     getPlayers('-');
   });
+
+  $("body").on('change', '#id-slate', function() {
+    getGames();
+  })
 
   // change tab
   $('.nav-tabs.ds .nav-link').click(function () {
     ds = $(this).text();
     $('#ds').val(ds);
-    getGames();
+    getSlates();
     // remove locked and clear search
     $('input[name=locked]').remove();
     $("#search-player").val('');
@@ -180,7 +185,7 @@ function pr_click(obj) {
 }
 
 function choose_all (obj) {
-  $('input[type="checkbox"]').prop("checked", $(obj).prop('checked'));
+  $('#div-players input[type="checkbox"]').prop("checked", $(obj).prop('checked'));
 }
 
 function change_point (obj, clear) {
@@ -203,13 +208,27 @@ function clear_proj (obj) {
   change_point($(obj).prev(), -1);
 }
 
-function getGames() {
+function getSlates() {
   $.post( "/get-slates", 
     { 
       ds: ds
     }, 
     function( data ) {
-      $( "div.slate" ).html( data );
+      $( "div.slates" ).html( data );
+      getGames();
+    }
+  );
+}
+
+function getGames() {
+  slate_id = $('#id-slate').val();
+
+  $.post( "/get-games", 
+    { 
+      slate_id: slate_id
+    }, 
+    function( data ) {
+      $( "div.games" ).html( data );
       getPlayers();
     }
   );
@@ -217,13 +236,13 @@ function getGames() {
 
 function getPlayers (order) {
   var games = '';
-  $('.slate').find('input:checked').each(function() {
+  $('.games').find('input:checked').each(function() {
     games += $(this).val()+';';
   })
 
   $.post( "/get-players", 
     { 
-      ds: ds,
+      slate_id: slate_id,
       games: games,
       order: order
     }, 

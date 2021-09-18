@@ -2,9 +2,7 @@
 from __future__ import unicode_literals
 import os
 import math
-import json
 import mimetypes
-import datetime
 from wsgiref.util import FileWrapper
 
 from django.shortcuts import render
@@ -12,23 +10,13 @@ from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from django.utils.encoding import smart_str
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Avg, Q, Sum
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.contrib.admin.views.decorators import staff_member_required
 from django.forms.models import model_to_dict
 
 from general.models import *
 from general.lineup import *
-from general.color import *
 
-from scripts.roto import get_players as roto_get_players
-from scripts.roto_games import get_games as roto_get_games
-
-CSV_FIELDS = {
-    'FanDuel': ['PG', 'PG', 'SG', 'SG', 'SF', 'SF', 'PF', 'PF', 'C'],
-    'DraftKings': ['PG', 'SG', 'SF', 'PF', 'C', 'G', 'F', 'UTIL'],
-    'Yahoo': ['PG', 'SG', 'G', 'SF', 'PF', 'F', 'C', 'UTIL']
-}
 
 
 def players(request):
@@ -144,16 +132,20 @@ def build_lineup(request):
     pids = []
 
     for ii in lineup:
+        player = {}
         if ii['player']:
+            # need to take care of old player info
+            player = Player.objects.filter(id=ii['player']).first() or {}
+
+        if player:
             pids.append(ii['player'])
-            player = Player.objects.get(id=ii['player'])
             num_players += 1
             sum_salary += player.salary
             sum_proj += float(cus_proj.get(str(player.id), player.proj_points))
-        else:
-            player = {}
+
         players.append({ 'pos':ii['pos'], 'player': player })
 
+    sum_proj = f'{sum_proj:.2f}'
     rem = (SALARY_CAP[ds] - sum_salary) / (ROSTER_SIZE[ds] - num_players) if ROSTER_SIZE[ds] != num_players else 0
     full = num_players == ROSTER_SIZE[ds]
 
@@ -165,9 +157,12 @@ def build_lineup(request):
 
     return JsonResponse(result, safe=False)
 
+
 @csrf_exempt
 def get_players(request):
-    ds = request.POST.get('ds')
+    slate_id = request.POST.get('slate_id')
+    slate = Slate.objects.get(pk=slate_id)
+    ds = slate.data_source
     order = request.POST.get('order', 'proj_points')
     if order == '-':
         order = 'proj_points'
@@ -178,20 +173,18 @@ def get_players(request):
     players = []
 
     cus_proj = request.session.get('cus_proj', {})
-
-    for ii in Player.objects.filter(data_source=ds, team__in=teams, play_today=True):
+    for ii in Player.objects.filter(slate=slate, team__in=teams):
         player = model_to_dict(ii, fields=['id', 'injury', 'avatar', 'salary', 'team',
                                            'actual_position', 'first_name', 'last_name',
-                                           'opponent'])
-        player['proj_points'] = float(cus_proj.get(str(ii.id), ii.proj_points))
-        player['pt_sal'] = player['proj_points'] * factor / ii.salary if ii.salary else 0
+                                           'handedness', 'order', 'confirmed', 'opponent'])
 
         if player['opponent'].startswith('@'):
             player['opponent'] = '@ '+player['opponent'][1:]
         else:
             player['opponent'] = 'vs '+player['opponent']
 
-
+        player['proj_points'] = float(cus_proj.get(str(ii.id), ii.proj_points))
+        player['pt_sal'] = player['proj_points'] * factor / ii.salary if ii.salary else 0
         players.append(player)
 
     players = sorted(players, key=lambda k: k[order], reverse=True)
@@ -202,59 +195,6 @@ def get_players(request):
 
     return JsonResponse(result, safe=False)
 
-
-def get_games_(pid, loc, opp, season):
-    player = Player.objects.get(id=pid)
-    q = Q(name='{} {}'.format(player.first_name, player.last_name)) \
-      & Q(team=player.team) \
-      & Q(date__range=[datetime.date(season, 10, 1), datetime.date(season+1, 6, 30)])
-
-    if opp:
-        q &= Q(opp=opp)
-    if loc != 'all':
-        q &= Q(location=loc)
-
-    return PlayerGame.objects.filter(q).order_by('-date')
-
-
-def current_season():
-    today = datetime.date.today()
-    return today.year if today > datetime.date(today.year, 10, 17) else today.year - 1
-
-
-def formated_diff(val):
-    fm = '{:.1f}' if val > 0 else '({:.1f})'
-    return fm.format(abs(val))
-
-
-def get_ranking(players, sattr, dattr, order=1):
-    # order = 1: ascending, -1: descending
-    players = sorted(players, key=lambda k: k[sattr]*order)
-    ranking = 0
-    prev_val = None
-    for ii in players:
-        if ii[sattr] != prev_val:
-            prev_val = ii[sattr]
-            ranking += 1
-        ii[dattr] = ranking
-    return players, ranking
-
-
-def get_player(full_name, team):
-    '''
-    FanDuel has top priority
-    '''
-    names = full_name.split(' ')
-    players = Player.objects.filter(first_name=names[0], last_name=names[1], team=team) \
-                            .order_by('data_source')
-    player = players.filter(data_source='FanDuel').first()
-    if not player:
-        player = players.first()
-    return player
-
-
-def mean(numbers):
-    return float(sum(numbers)) / max(len(numbers), 1)
 
 
 def _get_lineups(request):
@@ -342,7 +282,7 @@ def update_point(request):
     points = request.POST.get('val')
 
     player = Player.objects.get(id=pid.strip('-'))
-    factor = 1 if player.data_source == 'Yahoo' else 1000
+    factor = 1 if player.slate.data_source == 'Yahoo' else 1000
 
     cus_proj = request.session.get('cus_proj', {})
     if '-' in pid:
@@ -416,48 +356,82 @@ def export_manual_lineup(request):
 
 
 @staff_member_required
-def put_ids(request):
-    last_updated = Game.objects.all().order_by('-updated_at').first().updated_at
+def load_slate(request, slate_id):
+    load_empty_proj = request.GET.get('emtpy')
+    slate = Slate.objects.get(pk=slate_id)
+    games = Game.objects.filter(slate=slate)
 
-    if request.method == 'GET':
-        result = '-'
+    if load_empty_proj:
+        players = Player.objects.filter(slate=slate, proj_points=0)
     else:
-        ds = request.POST.get('ds')
-        ids = request.POST.get('ids').strip()
-        ids_ = ids.split('\r\n')
-        names = request.POST.get('names').strip()
-        names_ = names.split('\r\n')
+        players = Player.objects.filter(slate=slate, proj_points__gt=0)
 
-        failed = ''
-        for idx, name in enumerate(names_):
-            d = { 'rid': ids_[idx] }
-            first_name, last_name = parse_name(name)
-            flag = Player.objects.filter(first_name__iexact=first_name, 
-                                         last_name__iexact=last_name, 
-                                         data_source=ds).update(**d)
-            if not flag:
-                failed += '{}\n'.format(ids_[idx], name)
-        result = '{} / {}'.format(len(failed.split('\n')), len(ids_))
+    last_updated = BaseGame.objects.all().order_by('-updated_at').first().updated_at
 
-    return render(request, 'put-ids.html', locals())
+    return render(request, 'edit-slate.html', locals())
+
+
+@staff_member_required
+def upload_data(request):
+    if request.method == 'GET':
+        fd_slates = Slate.objects.filter(data_source="FanDuel").order_by('date')
+        dk_slates = Slate.objects.filter(data_source="DraftKings").order_by('date')
+
+        return render(request, 'upload-slate.html', locals())
+    else:
+        date = request.POST['date']
+        slate_name = request.POST['slate']
+        data_source = request.POST['data_source']
+        slate = get_slate(date, slate_name, data_source)
+
+        err_msg = ''
+        try:
+            projection_file = request.FILES['projection_file']
+            projection_info = parse_projection_csv(projection_file)
+            projection_info = [f"{row['name']} @#@{row['fpts'] or 0}" for row in projection_info]
+        except Exception:
+            err_msg = 'Projection file is invalid'
+            return render(request, 'upload-slate.html', locals())
+
+        try:
+            players_file = request.FILES['players_file']
+            players_info = parse_players_csv(players_file, data_source)
+            games = load_games(slate, players_info)
+            players = load_players(slate, players_info, projection_info)
+        except Exception:
+            err_msg = 'Player file is invalid'
+            return render(request, 'upload-slate.html', locals())
+
+        last_updated = BaseGame.objects.all().order_by('-updated_at').first().updated_at
+
+        return render(request, 'edit-slate.html', locals())
 
 
 @staff_member_required
 @csrf_exempt
-def trigger_scraper(request):
-    Player.objects.all().update(play_today=False)
-    for ds in DATA_SOURCE:
-        roto_get_players(ds[0])
-        roto_get_games(ds[0])
+def update_field(request):
+    data = request.POST
+    model_name = data.get('model')
+    id = data.get('id')
+    field = data.get('field')
+    val = data.get('val') if field != 'confirmed' else data.get('val') == 'true'
 
-    return HttpResponse('Completed')
+    model_cls = apps.get_model('general', model_name)
+    model = model_cls.objects.get(pk=id)
+    setattr(model, field, val)
+    model.save()
+
+    return HttpResponse()
 
 
-def go_dfs(request):
-    return render(request, 'go-dfs.html')
+@csrf_exempt
+def get_games(request):
+    slate_id = request.POST.get('slate_id')
+    games = Game.objects.filter(slate_id=slate_id)
+    return render(request, 'game-list.html', locals())
 
 @csrf_exempt
 def get_slates(request):
     ds = request.POST.get('ds')
-    games = Game.objects.filter(data_source=ds)
-    return render(request, 'game-slates.html', locals())
+    slates = Slate.objects.filter(data_source=ds)
+    return render(request, 'slate-list.html', locals())

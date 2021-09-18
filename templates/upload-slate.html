@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>GREEN LIGHT DFS</title>
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="row" style="width: 600px;">
+      <div class="col-12 mt-4">
+        <h4 class="text-primary my-4">Existing Slates</h4>
+      </div>
+      <div class="col-6">
+        <h5>FanDuel</h5>
+        <ul class="pl-4">
+          {% for slate in fd_slates %}
+          <li><a href="/slates/{{slate.id}}">{{slate.name}} ({{slate.date}})</a></li>
+          {% endfor %}
+        </ul>  
+      </div>
+      <div class="col-6">
+        <h5>DraftKings</h5>
+        <ul class="pl-4">
+          {% for slate in dk_slates %}
+          <li><a href="/slates/{{slate.id}}">{{slate.name}} ({{slate.date}})</a></li>
+          {% endfor %}
+        </ul>  
+      </div>
+    </div>
+    <hr>
+    <div class="mt-5" style="width: 600px;">
+      <h4 class="text-primary my-4">Upload Slate</h4>
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+          <input type="date" class="form-control" placeholder="Date" name="date" value="{{date}}" required>
+        </div>
+        <div class="form-group">
+          <select class="form-control" name="data_source" required>
+            <option value="">Choose Source</option>
+            <option {% if data_source == 'DraftKings' %} selected {% endif %}>DraftKings</option>
+            <option {% if data_source == 'FanDuel' %} selected {% endif %}>FanDuel</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Slate Name" name="slate" value="{{slate_name}}" required>
+        </div>
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" name="players_file" id="customFile" accept=".csv" required>
+          <label class="custom-file-label" for="customFile">Players Information</label>
+        </div>
+        <div class="custom-file mt-3">
+          <input type="file" class="custom-file-input" name="projection_file" id="customFile2" accept=".csv" required>
+          <label class="custom-file-label" for="customFile2">Custom Projection</label>
+        </div>
+        <div class="text-danger mt-2 pl-1">{{err_msg}}</div>
+        <button type="submit" class="btn btn-primary float-right mt-4">Submit</button>
+      </form>
+    </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <script type="text/javascript">
+    $(".custom-file-input").on("change", function() {
+      var fileName = $(this).val().split("\\").pop();
+      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+  </script>
+</body>
+</html>

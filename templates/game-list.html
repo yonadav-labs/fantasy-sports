@@ -1,0 +1,13 @@
+{% for game in games %}
+  <div class="slate-item">
+    <label class="form-check-label">
+      <div class="game-item text-center float-left mr-2" data-game="{{ game.id }}">
+        <input type="checkbox" class="form-check-input" checked="" value="{{ game.home_team }}-{{ game.visit_team }}">
+        <div class=""><strong>{{ game.visit_team }}</strong>{% if game.visit_score %}{{ game.visit_score }}{% endif %}</div>
+        <div class="time">@({{ game.time }})</div>
+        <div class=""><strong>{{ game.home_team }}</strong>{% if game.home_score %}{{ game.home_score }}{% endif %}</div>
+        <div class=""><strong>O/U</strong> ({{ game.ou }})</div>
+      </div>
+    </label>
+  </div>
+{% endfor %}

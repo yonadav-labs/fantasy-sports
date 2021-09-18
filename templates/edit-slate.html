@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>GREEN LIGHT DFS</title>
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//cdn.datatables.net/1.11.0/css/jquery.dataTables.min.css">
+
+  <style>
+    td {
+      padding: 0.3rem !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="mt-4">
+      <strong>Slate:</strong> {{slate.name}} ({{slate.date}}) [{{slate.data_source}}]
+      <strong class="ml-3">Last Updated:</strong> {{last_updated}}
+      <a class="btn btn-link btn-primary btn-sm ml-4" href="/upload-data">Upload a new file</a>
+    </div>
+
+    <div class="mt-5" style="width: 360px;">
+      <h4 class="text-primary my-4">Game Information</h4>
+      <table class="table table-hover table-sm">
+        <thead style="height: 40px;">
+          <tr>
+            <th>Visit</th>
+            <th>Home</th>
+            <th style="width: 100px;">O/U</th>
+            <th style="width: 100px;">Time</th>
+          </tr>
+        </thead>
+        <tbody data-model="Game">
+          {% for game in games %}
+          <tr data-id="{{game.id}}">
+            <td class="align-middle">{{game.visit_team}}</td>
+            <td class="align-middle">{{game.home_team}}</td>
+            <td data-field="ou"><input type="text" class="form-control" value="{{game.ou}}"></td>
+            <td data-field="time"><input type="text" class="form-control" value="{{game.time}}"></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mb-4">
+      <h4 class="text-primary mt-4 mb-2">Player Information</h4>
+      {% if not load_empty_proj %}
+      <a target="_blank" class="text-body" href="/slates/{{slate.id}}/?emtpy=1">(Players with 0 projection {{request.GET.emtpy}})</a>
+      {% endif %}
+    </div>
+
+    <div class="mb-5" style="height: 700px; overflow-y: scroll;">
+      <table class="table table-hover table-sm" id="table-players">
+        <thead style="height: 40px;">
+          <tr>
+            <th data-width='180'>Name</th>
+            <th data-orderable='false' data-width='120'>ID</th>
+            <th>Team</th>
+            <th data-orderable='false'>Opp</th>
+            <th data-orderable='false' data-width='80'>Position</th>
+            <th data-orderable='false' data-width='60'>Hand</th>
+            <th data-orderable='false' data-width='80'>Ord</th>
+            <th data-orderable='false' data-width='75'>Salary</th>
+            <th data-orderable='false' data-width='75'>FPTS</th>
+            <th data-orderable='false' data-width='100'>Injury</th>
+            <th data-orderable='false' data-width='40'>Conf</th>
+          </tr>
+        </thead>
+        <tbody data-model="Player">
+          {% for player in players %}
+          <tr data-id="{{player.id}}">
+            <td class="align-middle">{{player.first_name}} {{player.last_name}}</td>
+            <td class="align-middle">{{player.rid}}</td>
+            <td class="align-middle">{{player.team}}</td>
+            <td class="align-middle">{{player.opponent}}</td>
+            <td data-field="actual_position"><input type="text" class="form-control" value="{{player.actual_position}}"></td>
+            <td data-field="handedness"><input type="text" class="form-control" value="{{player.handedness}}"></td>
+            <td data-field="order"><input type="text" class="form-control" value="{{player.order}}"></td>
+            <td data-field="salary"><input type="number" step="1" class="form-control" value="{{player.salary}}"></td>
+            <td data-field="proj_points"><input type="number" class="form-control" min="0" value="{{player.proj_points}}"></td>
+            <td data-field="injury"><input type="text" class="form-control" value="{{player.injury}}"></td>
+            <td data-field="confirmed" class="align-middle text-center"><input class="checkbox" type="checkbox" {% if player.confirmed %}checked{% endif %}></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="//cdn.datatables.net/1.11.0/js/jquery.dataTables.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready( function () {
+      $('#table-players').DataTable({
+        paging: false
+      });
+    });
+
+    $("body").on('change', 'td input', function() {
+      var model = $(this).parents('tbody').data('model');
+      var id = $(this).parents('tr').data('id');
+      var field = $(this).parent().data('field');
+      var val = $(this).val();
+
+      if ($(this).hasClass('checkbox')) {
+        val = $(this).prop('checked');
+      }
+
+      var data = { model, id, field, val };
+
+      $.post( "/update-field", data, function( data ) {});
+    })
+  </script>
+</body>
+</html>

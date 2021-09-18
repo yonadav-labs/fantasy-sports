@@ -1,0 +1,7 @@
+<div class="">
+  <select class="form-control" id="id-slate">
+    {% for slate in slates %}
+      <option value="{{slate.id}}">{{slate.name}} ({{slate.date}})</option>
+    {% endfor %}
+  </select>
+</div>
