@@ -13,15 +13,19 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.contrib.admin.views.decorators import staff_member_required
 from django.forms.models import model_to_dict
+from django.apps import apps
 
 from general.models import *
 from general.lineup import *
-
+from general.dao import get_slate, load_games, load_players
+from general.utils import parse_players_csv, parse_projection_csv, mean
+from general.constants import CSV_FIELDS, SALARY_CAP, TEAM_MEMEBER_LIMIT
 
 
 def players(request):
     players = Player.objects.filter(data_source='FanDuel').order_by('first_name')
     return render(request, 'players.html', locals())
+
 
 @xframe_options_exempt
 def lineup_builder(request):
@@ -29,10 +33,12 @@ def lineup_builder(request):
     num_lineups = request.session.get('DraftKings_num_lineups', 1)
     return render(request, 'lineup-builder.html', locals())
 
+
 @xframe_options_exempt
 def lineup_optimizer(request):
     data_sources = DATA_SOURCE
     return render(request, 'lineup-optimizer.html', locals())
+
 
 def _is_full_lineup(lineup, ds):
     if not lineup:
@@ -40,6 +46,7 @@ def _is_full_lineup(lineup, ds):
 
     num_players = sum([1 for ii in lineup if ii['player']])
     return num_players == ROSTER_SIZE[ds]
+
 
 @csrf_exempt
 def check_mlineups(request):
@@ -51,6 +58,7 @@ def check_mlineups(request):
         lineup = request.session.get(key)
         res.append([ii, 'checked' if _is_full_lineup(lineup, ds) else 'disabled'])
     return JsonResponse(res, safe=False)
+
 
 @csrf_exempt
 def build_lineup(request):
@@ -161,6 +169,14 @@ def build_lineup(request):
 @csrf_exempt
 def get_players(request):
     slate_id = request.POST.get('slate_id')
+    if not slate_id:
+        result = {
+            'html': '',
+            'num_lineups': '',
+        }
+
+        return JsonResponse(result, safe=False)
+
     slate = Slate.objects.get(pk=slate_id)
     ds = slate.data_source
     order = request.POST.get('order', 'proj_points')
@@ -194,7 +210,6 @@ def get_players(request):
     }
 
     return JsonResponse(result, safe=False)
-
 
 
 def _get_lineups(request):
@@ -265,7 +280,7 @@ def gen_lineups(request):
     ds = request.POST.get('ds')
     header = CSV_FIELDS[ds] + ['Spent', 'Projected']
     
-    rows = [[[str(jj) for jj in ii.get_roster_players()]+[int(ii.spent()), ii.projected()], 'ii.drop']
+    rows = [[[str(jj) for jj in ii.get_roster_players()]+[int(ii.spent()), f'{ii.projected():.2f}'], 'ii.drop']
             for ii in lineups]
 
     result = {
@@ -366,7 +381,8 @@ def load_slate(request, slate_id):
     else:
         players = Player.objects.filter(slate=slate, proj_points__gt=0)
 
-    last_updated = BaseGame.objects.all().order_by('-updated_at').first().updated_at
+    last_record = BaseGame.objects.all().order_by('-updated_at').first()
+    last_updated = last_record.updated_at if last_record else ''
 
     return render(request, 'edit-slate.html', locals())
 
@@ -402,7 +418,8 @@ def upload_data(request):
             err_msg = 'Player file is invalid'
             return render(request, 'upload-slate.html', locals())
 
-        last_updated = BaseGame.objects.all().order_by('-updated_at').first().updated_at
+        last_record = BaseGame.objects.all().order_by('-updated_at').first()
+        last_updated = last_record.updated_at if last_record else ''
 
         return render(request, 'edit-slate.html', locals())
 
@@ -427,8 +444,12 @@ def update_field(request):
 @csrf_exempt
 def get_games(request):
     slate_id = request.POST.get('slate_id')
-    games = Game.objects.filter(slate_id=slate_id)
+    games = []
+    if slate_id:
+        games = Game.objects.filter(slate_id=slate_id)
+
     return render(request, 'game-list.html', locals())
+
 
 @csrf_exempt
 def get_slates(request):
