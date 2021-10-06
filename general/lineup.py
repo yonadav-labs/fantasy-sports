@@ -83,7 +83,7 @@ def get_lineup(ds, players, teams, locked, ban, max_point, con_mul):
     variables = []
 
     for i, player in enumerate(players):
-        if player.id in locked and ds != 'DraftKings':
+        if player.id in locked and ds == 'impossible':  # != 'DraftKings':
             variables.append(solver.IntVar(1, 1, str(player)+str(i)))
         elif player.id in ban:
             variables.append(solver.IntVar(0, 0, str(player)+str(i)))
@@ -120,7 +120,7 @@ def get_lineup(ds, players, teams, locked, ban, max_point, con_mul):
                 if team == player.team:
                     team_cap.SetCoefficient(variables[i], 1)
 
-    if ds == 'DraftKings':    # multi positional constraints
+    if ds:  # == 'DraftKings':    # multi positional constraints
         for ii in con_mul:
             if players[ii[0]].id in locked:
                 mul_pos_cap = solver.Constraint(1, 1)
@@ -167,7 +167,6 @@ def get_exposure(players, lineups):
 
 
 def calc_lineups(players, num_lineups, locked, ds, exposure, cus_proj):
-
     result = []
 
     max_point = 10000
@@ -194,7 +193,7 @@ def calc_lineups(players, num_lineups, locked, ds, exposure, cus_proj):
     ban = []
     _ban = []   # temp ban
 
- # for min exposure
+    # for min exposure
     for ii in exposure:
         if ii['min']:
             _locked = [ii['id']]
@@ -213,7 +212,7 @@ def calc_lineups(players, num_lineups, locked, ds, exposure, cus_proj):
                 roster = get_lineup(ds, players, teams, locked+_locked, ban+_ban, max_point, con_mul)
 
                 if not roster:
-                    return post_process(_result, ds)
+                    return post_process(result, ds)
 
                 max_point = roster.projected(gross=True) - 0.001
                 if roster.get_num_teams() >= TEAM_LIMIT[ds]:
