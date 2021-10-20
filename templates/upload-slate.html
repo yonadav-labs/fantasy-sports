@@ -6,11 +6,11 @@
 </head>
 <body>
   <div class="container">
-    <div class="row" style="width: 600px;">
+    <div class="row" style="width: 800px;">
       <div class="col-12 mt-4">
         <h4 class="text-primary my-4">Existing Slates</h4>
       </div>
-      <div class="col-6">
+      <div class="col-4">
         <h5>FanDuel</h5>
         <ul class="pl-4">
           {% for slate in fd_slates %}
@@ -18,13 +18,21 @@
           {% endfor %}
         </ul>  
       </div>
-      <div class="col-6">
+      <div class="col-4">
         <h5>DraftKings</h5>
         <ul class="pl-4">
           {% for slate in dk_slates %}
           <li><a href="/slates/{{slate.id}}">{{slate.name}} ({{slate.date}})</a></li>
           {% endfor %}
         </ul>  
+      </div>
+      <div class="col-4">
+        <h5>Yahoo</h5>
+        <ul class="pl-4">
+          {% for slate in yh_slates %}
+          <li><a href="/slates/{{slate.id}}">{{slate.name}} ({{slate.date}})</a></li>
+          {% endfor %}
+        </ul>
       </div>
     </div>
     <hr>
@@ -40,6 +48,7 @@
             <option value="">Choose Source</option>
             <option {% if data_source == 'DraftKings' %} selected {% endif %}>DraftKings</option>
             <option {% if data_source == 'FanDuel' %} selected {% endif %}>FanDuel</option>
+            <option {% if data_source == 'Yahoo' %} selected {% endif %}>Yahoo</option>
           </select>
         </div>
         <div class="form-group">

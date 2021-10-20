@@ -392,6 +392,7 @@ def upload_data(request):
     if request.method == 'GET':
         fd_slates = Slate.objects.filter(data_source="FanDuel").order_by('date')
         dk_slates = Slate.objects.filter(data_source="DraftKings").order_by('date')
+        yh_slates = Slate.objects.filter(data_source="Yahoo").order_by('date')
 
         return render(request, 'upload-slate.html', locals())
     else:

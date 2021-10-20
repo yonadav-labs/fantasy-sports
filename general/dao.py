@@ -61,6 +61,17 @@ def load_players(slate, players_info, projection_info):
             position = player_info['Roster Position']
             salary = player_info['Salary'] or 0
             injury = player_info['Injury Details'] or ''
+        elif slate.data_source == 'Yahoo':
+            rid = player_info['ID']
+            first_name = player_info['First Name']
+            last_name = player_info['Last Name']
+            name = f'{first_name} {last_name}'
+            game_info = f"{player_info['Game']}  {player_info['Time']}"
+            team = player_info['Team']
+            actual_position = player_info['Position']
+            position = player_info['Position']
+            salary = player_info['Salary'] or 0
+            injury = player_info.get('Injury Status', '').strip()
 
         visit_team, home_team, _ = parse_game_info(slate.data_source, game_info)
         if not visit_team:
@@ -116,6 +127,8 @@ def load_games(slate, players_info):
         games_data = set(player['Game Info'] for player in players_info)
     elif slate.data_source == 'FanDuel':
         games_data = set(player['Game'] for player in players_info)
+    elif slate.data_source == 'Yahoo':
+        games_data = set(f"{player['Game']}  {player['Time']}" for player in players_info)
 
     games = []
     for game_info in games_data:
